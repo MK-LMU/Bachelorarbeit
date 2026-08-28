@@ -1,40 +1,24 @@
 # -*- coding: utf-8 -*-
-"""Multi-seed evaluation — ONE pass per dataset, writes the complete
+"""Multi-seed evaluation: ONE pass per dataset, writes the complete
 results_multiseed_<ds>.json.
 
-Consolidates the former 4-script chain (campaign_spex_metrics -> fill_gaps ->
-fill_diversity_fixed -> add_kmeans_baseline, now in archive/), which had to run
-in exactly that order because the aggregator rewrote the json. Per dataset:
+Both methods are scored by the same metric functions on the same X, with one
+neighbour structure precomputed per dataset and reused across seeds and methods.
+Three choices are worth knowing:
 
-  - neighbour structure on X precomputed ONCE (metrics.precompute_nn,
-    bit-exact vs IDC's verbatim code — results/equivalence_check.json) and
-    reused across seeds/methods
-  - per seed s:
-      SpEx: spectral(random_state=s) -> tree -> |SHAP| gates; ACC/ARI/NMI;
-            decomposition ARI(ref,y)/ARI(tree,ref); uniqueness raw+rownorm,
-            stability_k5, nn_identical_frac; diversity + diversity_fixed;
-            correlation faithfulness (faithfulness_corr); generalizability;
-            drop-based faithfulness (masking curve on the tree)
-      IDC:  loads idc_out_<ds>_seed<s>.npz (training campaign output);
-            ACC/ARI/NMI recomputed from the FINAL labels via Munkres, not read
-            from the best-epoch values IDC logs during training;
-            same distance metrics; diversity_fixed; drop-faithfulness from
-            the npz (IDC's correlation faithfulness is read from the npz as
-            well, by gen_results_table.py)
-      Iris (base and _best variant): dedup variant of the distance metrics
-            for both methods (duplicate rows -> division by zero otherwise)
-  - once per dataset: plain k-means ARI as a reality check — on several
-    datasets it beats both explainable methods, which puts their scores in
-    perspective
+  - IDC's ACC/ARI/NMI are recomputed from the FINAL labels via Munkres, not read
+    from the best-epoch values IDC logs during training -- those are selected
+    under label access and would favour IDC over a tree that has no epochs.
+  - Iris has duplicate rows, so its nearest-neighbour distance is 0 and the
+    distance metrics divide by zero. A deduplicated variant is reported next to
+    the raw one for both methods.
+  - A plain k-means ARI is computed per dataset as a reality check; on several
+    datasets it beats both explainable methods.
 
-Seed behaviour of the SpEx side (campaign-verified): everything that depends
-only on the tree — ACC/ARI/NMI, all gate metrics, faithfulness, diversity —
-has std 0.000 across the 5 spectral seeds on every dataset; on CIFAR/MNIST
-the spectral reference itself moves by ~1e-4 in ARI(ref, y) without changing
-the tree output. generalizability varies with the seed by design (its 70/30
-split uses the seed, identically for both methods). All extras are therefore
-aggregated over the seeds like every other metric (n = 5) instead of being
-taken from seed 0.
+Seeds: the SpEx side is deterministic -- every tree-dependent metric has std
+0.000 across the 5 spectral seeds (on CIFAR/MNIST the reference itself moves by
+~1e-4 without changing the tree). generalizability varies by design, its 70/30
+split uses the seed identically for both methods.
 
 Usage: evaluate.py [dataset ...]        (default: all)
 """
@@ -189,6 +173,12 @@ def evaluate_dataset(ds):
         row["generalizability"] = gener_split(X, g, y, s)
         row["faithfulness_top1drop"] = float(di["faithfulness_top1drop"]) if "faithfulness_top1drop" in di else float("nan")
         row["faithfulness_aopc"] = float(di["faithfulness_aopc"]) if "faithfulness_aopc" in di else float("nan")
+        # The correlation faithfulness needs masked inference through the LIVE
+        # torch model, which is gone by now, so run_idc.py computes it at
+        # training time and it is only read across here. Forgetting this read
+        # does not raise -- it silently prints nan for IDC in every row, while
+        # SpEx shows a number.
+        row["faithfulness_corr"] = float(di["faithfulness"]) if "faithfulness" in di else float("nan")
         extras(g, row)
         if not np.any(g > 0):
             idc_zero.append(int(s))

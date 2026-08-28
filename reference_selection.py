@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 """Symmetric, label-free selection of SpEx's REFERENCE clusterer — the
-pipeline's counterpart to IDC's config tuning (tune_idc.py -> reselect_best.py).
+pipeline's counterpart to IDC's config tuning. SpEx's only free choice is
+subjected to the same protocol IDC's grid gets, so neither side is tuned
+harder than the other.
 
-Phase 1: per dataset, two reference candidates (SpectralClustering as used
-throughout, and k-means) are scored with the SAME unsupervised protocol as
-IDC's grid: silhouette on (X, reference labels); ARI is logged for
-transparency but never used for selection. Both candidates always produce
-the requested K clusters, so the K-constraint of that protocol (a candidate
-must use all K) is trivially met here.
+Phase 1: the two candidates (SpectralClustering as used throughout, and
+k-means) are scored by silhouette on (X, reference labels); ARI is logged but
+never used. Both always produce the requested K, so the K-constraint of that
+protocol is trivially met here.
 
 Phase 2: wherever the selection flips away from the fixed Spectral choice, the
-full SpEx pipeline (tree -> Tree SHAP -> all metrics, 5 seeds) is rerun on the
-winning reference, so the effect on the comparison can be quantified.
-Outcome: 6 of 8 datasets flip to k-means on silhouette (two_moons, blobs,
-breast_cancer, digits, har, mnist); iris and CIFAR keep spectral. Which ones
-flip cannot be predicted from ARI here -- ARI is exactly the signal this
+full SpEx pipeline is rerun on the winning reference over 5 seeds, so the
+effect on the comparison is quantified rather than assumed. Which datasets
+flip cannot be predicted from their ARI — that is precisely the signal this
 protocol refuses to look at.
 
 Output: results/tuning/reference_selection.json

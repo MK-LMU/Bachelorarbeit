@@ -103,10 +103,10 @@ groups are explained here once.
 
 ## Two Moons  (N=2000, D=2, K=2, seeds=[0, 1, 2, 3, 4], IDC config: default, k-means baseline ARI 0.479)
 
-| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
-|---|---|---|
 > **All gates zero** in IDC seeds [0, 1, 2, 3, 4]: those runs produced no explanation at all. The granularity and diversity rows below still show numbers for them, but those numbers describe an empty matrix, not a coarse one.
 
+| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
+|---|---|---|
 | **Clustering quality** | | |
 | ACC | 0.819 ±0.000 | 0.500 ±0.000 |
 | ARI | 0.406 ±0.000 | 0.000 ±0.000 |
@@ -183,10 +183,10 @@ groups are explained here once.
 
 ## Gaussian Blobs  (N=2000, D=2, K=5, seeds=[0, 1, 2, 3, 4], IDC config: default, k-means baseline ARI 0.871)
 
-| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
-|---|---|---|
 > **All gates zero** in IDC seeds [0, 1, 2, 3, 4]: those runs produced no explanation at all. The granularity and diversity rows below still show numbers for them, but those numbers describe an empty matrix, not a coarse one.
 
+| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
+|---|---|---|
 | **Clustering quality** | | |
 | ACC | 0.927 ±0.000 | 0.200 ±0.000 |
 | ARI | 0.832 ±0.000 | 0.000 ±0.000 |
@@ -291,10 +291,10 @@ groups are explained here once.
 
 ## Iris — IDC best (grid/silhouette)  (N=150, D=4, K=3, seeds=[0, 1, 2, 3, 4], IDC config: tuned (grid, silhouette-selected), k-means baseline ARI 0.716)
 
-| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
-|---|---|---|
 > **All gates zero** in IDC seeds [2, 3, 4]: those runs produced no explanation at all. The granularity and diversity rows below still show numbers for them, but those numbers describe an empty matrix, not a coarse one.
 
+| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
+|---|---|---|
 | **Clustering quality** | | |
 | ACC | 0.893 ±0.000 | 0.537 ±0.290 |
 | ARI | 0.732 ±0.000 | 0.256 ±0.385 |

@@ -1,25 +1,19 @@
-"""Property tests for the metric layer (metrics.py) — data-free, runs in seconds,
-exit code 1 on any failure. Pins down the facts the thesis relies on:
+"""Property tests for the metric layer (metrics.py) — data-free, runs in
+seconds, exit code 1 on any failure. Each claim the thesis makes about the
+metrics is asserted here rather than argued in prose:
 
-  diversity offset    IDC's original `diversity` sums the Jaccard matrix
-      INCLUDING the diagonal but divides by K(K-1): code == (published A.7
-      formula) - 100/(K-1) whenever every cluster's median set is non-empty;
-      its ceiling is 100*(1-1/(K-1)). With an EMPTY median set sklearn's
-      jaccard_score(0,0) == 0 and the value can exceed that ceiling (the
-      empty-set pathology).
-  diversity repaired  `diversity_fixed`: range [0, 100], 100 for disjoint
-      feature use, 0 for identical, invariant under joint rescaling, nan for
-      an all-zero cluster.
-  K pass-through      `faithfulness_k` is IDC's faithfulness with n_clusters
-      passed through: identical output at K = 10; the original raises
-      IndexError at K != 10.
-  fast path           the neighbour-structure fast path (uniqueness_pre /
-      stability_pre) is bit-exact vs IDC's originals on random data and on an
-      integer tie grid; stability(k=2) == uniqueness(k=2); per sample
-      stability_k5 >= uniqueness_k2.
-  normalisation       `row_normalize`: every non-zero row has max 1, all-zero
-      rows stay 0; nn_identical_frac (sklearn) == nn_identical_frac_pre (IDC
-      argsort) without ties.
+  diversity offset    IDC's original sums the Jaccard matrix INCLUDING the
+      diagonal but divides by K(K-1), so it equals the published A.7 formula
+      minus 100/(K-1) and is capped at 100*(1-1/(K-1)) — unless a cluster's
+      median set is empty, where jaccard_score(0,0) == 0 breaks even that.
+  diversity repaired  `diversity_fixed` spans [0, 100], is invariant under
+      joint rescaling, and returns nan for an all-zero cluster.
+  K pass-through      `faithfulness_k` matches the original at K = 10, where
+      the original still works, and survives the K != 10 it cannot handle.
+  fast path           uniqueness_pre / stability_pre are bit-exact against
+      IDC's originals, including on an integer tie grid.
+  normalisation       `row_normalize` leaves all-zero rows at zero, and the
+      two nn_identical_frac implementations agree without ties.
 """
 import os
 import sys

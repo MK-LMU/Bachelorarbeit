@@ -1,38 +1,25 @@
-"""Correctness chain, part 3 — the SAME checks on the trees that are actually
+"""Correctness chain, part 3 -- the same checks on the trees that are actually
 evaluated.
 
-test_correctness.py validates the converter on Breast Cancer (k=8), Wine and
-Digits. This script repeats the decisive checks on every production tree: per
-dataset the tree is built exactly as evaluate.py does (spex_side() on the X
-stored in the training npz, same K, spectral seed 0), converted, and checked:
+Part 1 (test_correctness.py) validates the converter on Breast Cancer, Wine and
+Digits. Here every production tree is rebuilt exactly as evaluate.py builds it
+(spex_side() on the X from the training npz, same K, spectral seed 0) and put
+through node weights, functional equivalence, additivity, production wiring and
+the brute-force Shapley definition.
 
-  functional equivalence  dict encodes the same clustering function as the
-                          SpEx tree
-  node weights            node_sample_weight matches an independent
-                          re-derivation and satisfies parent == left + right
-  additivity              base + sum(SHAP) == routed leaf value
-  brute force             shipped Tree SHAP == exact path-dependent Shapley
-                          definition (40 samples)
-  production wiring       the (N, D) gate matrix returned by spex_side equals
-                          |SHAP| of the assigned-cluster column of the
-                          converted tree
+Production wiring exists only here: part 1 never calls spex_side(), so a wrong
+index in spex_pipeline.py would pass every check there and still corrupt every
+number in the thesis. Its tolerance is exact equality, not 1e-6.
 
-The last one exists only here: part 1 never calls spex_side(), so a wrong index
-in spex_pipeline.py would pass every test there and still corrupt every number
-in the thesis. Tolerance is therefore exact equality, not 1e-6.
+Two of part 1's checks are not repeated. The model-agnostic cross-check knows
+nothing about trees and is far too slow at D = 784. The format round-trip needs
+an sklearn tree because it validates the array FORMAT, which does not depend on
+which production tree is converted.
 
-Two of part 1's five checks are not repeated. The model-agnostic cross-check
-knows nothing about trees, is already covered there, and is far too slow at
-D = 784. The format round-trip compares against scikit-learn's native explainer
-and therefore needs an sklearn tree: it validates the array FORMAT, which does
-not depend on which production tree is converted.
+The brute force is O(2^M) in the features the tree uses; trees above
+MAX_BRUTEFORCE_FEATURES are reported and skipped instead of hanging.
 
-The brute force is O(2^M) in the number M of features the tree uses; trees with
-M > MAX_BRUTEFORCE_FEATURES are reported and skipped instead of hanging.
-
-Needs artifacts/idc_out/idc_out_<ds>_seed0.npz (training campaign, step 3 of
-reproduce_all.py). Exit code 1 if any check fails.
-
+Needs artifacts/idc_out/idc_out_<ds>_seed0.npz. Exit code 1 if any check fails.
 Usage: test_correctness_evaluated.py [dataset ...]    (default: all 9)
 """
 import os

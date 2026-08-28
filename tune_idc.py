@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Per-dataset IDC tuning campaign (GPU) — fills the last fairness gap.
+"""Per-dataset IDC tuning campaign (GPU) — fills the last fairness gap:
+IDC's hyperparameters were the one thing still left at their defaults while
+SpEx had nothing to tune.
 
-Phase 1 (selection): for every non-MNIST dataset, train a small grid of
-configs (LGL x epochs, seed 0) and score each candidate UNSUPERVISED with the
-silhouette score on (X, predicted labels). ARI is logged for transparency but
-NEVER used for selection (that would be supervised leakage — a clustering
-method has no access to ground-truth labels). Collapsed solutions (<2 used
-clusters) score -1 and cannot win.
+Phase 1 (selection): train a small grid of configs (LGL x epochs, seed 0) per
+dataset and score each candidate UNSUPERVISED by silhouette on (X, predicted
+labels). ARI is logged for transparency but NEVER used for selection — a
+clustering method has no access to ground-truth labels. Collapsed solutions
+(<2 used clusters) score -1 and cannot win.
 
-Phase 2 (error bars): the winning config is retrained with seeds 1-4 under
-the tag `_best` into the canonical artifacts/idc_out/, so evaluate.py and the
-results table pick the runs up like any other dataset variant. The seed-0
-winner npz/model are copied over from the grid folder.
+Phase 2 (error bars): the winner is retrained with seeds 1-4 under the tag
+`_best` into the canonical artifacts/idc_out/, so evaluate.py and the results
+table pick the runs up like any other dataset variant.
 
-Outputs:
-  artifacts/tuning/           all phase-1 grid candidates (npz + models)
-  results/tuning/selection.json   full grid table + winner per dataset
-  artifacts/idc_out|models/   only the final `_best` seed runs
+Outputs: artifacts/tuning/ (grid candidates), results/tuning/selection.json
+(grid table + winner), artifacts/idc_out|models/ (the `_best` seed runs).
 
 Usage: tune_idc.py [dataset ...]     (default: all 7 non-MNIST datasets)
 """

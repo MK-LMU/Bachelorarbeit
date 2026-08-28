@@ -5,17 +5,13 @@ thesis come from a listed, rerunnable command.
 
 Head-to-head: the SpEx pipeline's ARI is constant across seeds on every
 dataset (asserted below from the `values` arrays), so each comparison is a
-ONE-SAMPLE t-test of IDC's 5 per-seed ARIs against that constant
-(scipy.stats.ttest_1samp, two-sided). n = 5 is small: normality of the seed
-ARIs cannot be checked, so the 95 % t-intervals are reported alongside.
-
-Multiple comparisons: 9 tests are run. Raw p-values are kept for comparability
-with the tables, and a Holm–Bonferroni step-down adjustment (family-wise
-alpha = 0.05) is reported next to them; `verdict` uses the ADJUSTED p.
+ONE-SAMPLE t-test of IDC's 5 per-seed ARIs against that constant, two-sided.
+n = 5 is too small to check normality, so 95 % t-intervals are reported
+alongside. Across the 9 tests, raw p-values are kept for comparability with
+the tables but `verdict` uses the Holm–Bonferroni adjusted p (FWER 0.05).
 
 Architecture check: 3 seeds of the small/tiny networks vs. the 5 `_best`
-seeds of the default network — Welch two-sample t-tests (unequal variances),
-Holm-adjusted within that family of 4 tests.
+seeds of the default — Welch t-tests, Holm-adjusted within their own family.
 
 Output: results/significance.json + console table.
 """
@@ -75,6 +71,9 @@ def head_to_head():
 
 
 def architecture_check():
+    # Absent whenever check_architecture.py was not run. Returning None makes
+    # the JSON's architecture section null and leaves the head-to-head tests
+    # untouched, so this file stays runnable without that script.
     p_arch = results("arch_check.json")
     if not os.path.exists(p_arch):
         return None

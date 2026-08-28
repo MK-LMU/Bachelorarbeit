@@ -1,21 +1,18 @@
-"""One metric module applied IDENTICALLY to SpEx and IDC.
+"""One metric module applied IDENTICALLY to SpEx and IDC, so that no measured
+difference can originate in the evaluation. Three layers:
 
-Three layers, top to bottom:
-  1. IDC's OWN interpretability_metrics.py, imported verbatim (no
-     reimplementation) — both methods are scored by exactly the same code.
+  1. IDC's OWN interpretability_metrics.py, imported verbatim.
   2. Labelled additions of this thesis, each motivated by a defect of the
-     original that is stated where the addition is defined: faithfulness_k
-     (K-fix), row_normalize, nn_identical_frac, faithfulness_curve/_drop
-     (top-1 drop + AOPC), diversity_fixed (repaired weighted-Jaccard variant).
-  3. A bit-exact fast path for the O(N^2) distance metrics (neighbour
-     structure precomputed once per dataset with IDC's OWN operations and
-     reused across seeds/methods). Run this module directly to execute the
+     original that is stated where the addition is defined.
+  3. A bit-exact fast path for the O(N^2) distance metrics: the neighbour
+     structure is precomputed once per dataset with IDC's OWN operations and
+     reused across seeds and methods. Run this module directly to execute the
      equivalence proof against IDC's originals.
 
-The only inputs that differ between methods are:
-  - gates:        (N, D) non-negative feature-importance matrix
-                  IDC -> learned local gates;  SpEx -> |SHAP| for assigned cluster
-  - inference_fn: X(masked) -> hard cluster labels (each method's own predictor)
+Only two inputs differ between the methods:
+  - gates:        (N, D) non-negative importance matrix — IDC's learned local
+                  gates, or SpEx's |SHAP| for the assigned cluster
+  - inference_fn: X(masked) -> hard labels, each method's own predictor
 """
 import os, sys
 import numpy as np
@@ -334,12 +331,10 @@ if __name__ == "__main__":
     # comes from). Any mismatch raises (verify_equivalence asserts a == b).
     # The JSON records per case how many comparisons were NUMERIC rather than
     # nan/inf -- iris alone manages 1 of 16, which a bare max|diff| would hide.
-    # Result:
-    # results/equivalence_check.json. Budget SEVERAL HOURS, not one: IDC's
-    # originals rebuild the full N x N distance matrix on every call, so the
-    # cost is O(N^2 * D) x 16 per dataset. HAR alone (N=10299, D=561) runs
-    # about an hour; CIFAR/MNIST are comparable. The measured claim does not
-    # change between runs -- rerun only after touching the fast path.
+    # Output: results/equivalence_check.json. Budget SEVERAL HOURS -- for the
+    # reason given at the top of layer 3 this costs O(N^2 * D) x 16 per dataset,
+    # and HAR alone (N=10299, D=561) takes about an hour. The measured claim
+    # does not move between runs; rerun only after touching the fast path.
     import json, warnings
     from wpaths import idc_out, results
     from spex_pipeline import spex_side          # pulls in shap -> only here

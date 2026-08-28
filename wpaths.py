@@ -23,8 +23,8 @@ RESULTS_TUNING = os.path.join(RESULTS, "tuning")          # selection.json etc.
 RESULTS_PERTURB = os.path.join(RESULTS, "perturbation")   # stability.json
 LOGS = os.path.join(HERE, "logs")
 # Figures and HTML reports live with the thesis, not in the repository
-# (notes/ is gitignored). DOCS is still imported by two archive/ scripts and
-# points to where their output now belongs.
+# (notes/ is gitignored), but the paths stay defined here so that scripts
+# writing them do not each hard-code the location.
 FIGURES = os.path.join(HERE, "notes", "figures")
 DOCS = os.path.join(HERE, "notes", "erklaerungen")
 

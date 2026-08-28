@@ -1,66 +1,29 @@
-"""
-Tree SHAP on the SpEx clustering tree.
+"""Tree SHAP on the SpEx clustering tree.
 
-Goal
-----
 SpEx (NeurIPS 2025, https://github.com/talargv/SpEx) produces an axis-parallel
-decision tree that explains a reference clustering. This module converts that
-tree into SHAP's "custom tree" dict format and runs
-shap.TreeExplainer on it, yielding continuous, signed per-sample / per-cluster /
-global feature attributions instead of binary "feature is on the path" masks.
-It is the bridge every SpEx number in this work goes through; spex_pipeline.py
-wraps it into the production path.
+tree explaining a reference clustering. This module converts that tree into
+SHAP's "custom tree" dict format, so that shap.TreeExplainer yields continuous,
+signed per-sample attributions instead of a binary "feature is on the path"
+mask. It is the bridge every SpEx number in this work goes through;
+spex_pipeline.py wraps it into the production path.
 
-=============================================================================
-REAL SpEx NODE STRUCTURE  (read from SpEx/base_classes.py + SpEx/clique_based.py)
-=============================================================================
-The tree node is the class `Cut` (base_classes.py, lines 7-22):
+The one thing the converter cannot read off the tree
+----------------------------------------------------
+SpEx nodes are `Cut` objects (SpEx/base_classes.py) carrying `coordinate`,
+`threshold`, `left`, `right` -- and a `cluster` field that `CliqueBased.train`
+NEVER populates. Cluster ids are assigned at PREDICTION time: `Tree.predict`
+walks the tree with a LIFO stack and labels each leaf with a running counter as
+it reaches it, so a leaf's cluster id is the order in which predict() visits it.
+Reading `cut.cluster` would therefore give nonsense.
 
-    class Cut:
-        def __init__(self, coordinate=0, threshold=np.inf,
-                     left=None, right=None, cluster=-1):
-            self.coordinate = coordinate   # <-- SPLIT FEATURE INDEX (int)
-            self.threshold  = threshold    # <-- SPLIT THRESHOLD (float)
-            self.left       = left         # <-- LEFT child  (Cut or None)
-            self.right      = right        # <-- RIGHT child (Cut or None)
-            self.cluster    = cluster      # cluster id field, BUT see note below
+Instead the reference data is routed through the tree and the predict()-labels
+are counted per node. That yields both `values` (cluster probabilities, one-hot
+at any leaf reference samples actually reach) and `node_sample_weight`, which
+Tree SHAP needs to integrate out absent features.
 
-What the converter has to know about that structure:
-
-  * How to recognise a LEAF?
-        `cut.left is None`  (and equivalently `cut.right is None`).
-        Internal nodes ALWAYS have both children set (clique_based.py:115-116).
-        NOTE: a leaf still carries `coordinate`/`threshold` -- they hold the
-        "most promising split" that was never applied; ignore them at leaves.
-
-  * Where is the SPLIT COORDINATE (feature index)?
-        `cut.coordinate`  (int).
-
-  * Where is the THRESHOLD?
-        `cut.threshold`   (float).
-
-  * Children names?
-        `cut.left`, `cut.right`.  Split rule (base_classes.py:51, identical to
-        SHAP's convention): go LEFT iff `data[:, coordinate] <= threshold`.
-
-  * How to reach the ROOT?
-        `explainable_tree.tree.root`  (CliqueBased.tree is a `Tree`,
-        whose `.root` is the top `Cut`).
-
-  * Where is the CLUSTER ID stored at leaves?
-        TRAP: `cut.cluster` exists but is NOT populated by CliqueBased.train.
-        Cluster ids are assigned at PREDICTION time (Tree.predict,
-        base_classes.py:28-61): the tree is walked with a LIFO stack and every
-        time a leaf is reached the running counter `k` is incremented and used
-        as that leaf's label. So the cluster id of a leaf == the order in which
-        predict() visits it. => We must NOT read `cut.cluster`; instead we get
-        labels from `tree.predict(X_ref)` and build per-node label histograms.
-
-Consequence for the converter: `values` (cluster probabilities per node) and
-`node_sample_weight` are obtained empirically by routing the reference data
-through the tree and counting predict()-labels per node (one-hot at any leaf that
-reference samples actually reach -- see the note at `values[nid]` below).
-=============================================================================
+Split convention: go LEFT iff `x[coordinate] <= threshold` -- identical to
+SHAP's, so no inversion is needed. Leaves keep a `coordinate`/`threshold` from
+a split that was never applied; ignore them there.
 """
 
 import os

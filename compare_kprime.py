@@ -27,8 +27,7 @@ from sklearn.metrics import normalized_mutual_info_score, adjusted_rand_score
 
 from clique_based import CliqueBased
 from tree_shap_spex import spex_tree_to_shap_dict, to_NDK
-from metrics import all_metrics          # moved here unchanged from the archived
-                                         # shared_metrics.py
+from metrics import all_metrics
 from interpretability_metrics import get_accuracy
 
 

@@ -1,26 +1,19 @@
 # -*- coding: utf-8 -*-
-"""RQ2: stability of explanations under DATA perturbations.
+"""RQ2: are the explanations stable under DATA perturbations -- for SpEx,
+are the same tree splits selected; for IDC, are the same gates learned?
 
-Proposal wording: "For SpEx, whether the same tree splits are selected.
-For IDC, whether the same local and global gates are learned."
+Four datasets (iris, breast_cancer, digits, har) under noise sigma in
+{0.01, 0.05, 0.10} and subsampling {90%, 80%}, 3 deterministic repetitions
+each. Each method is rebuilt on the perturbed data and compared with its own
+baseline on two levels: does it still produce the same PARTITION (ARI), and
+does it still point at the same FEATURES (split sets and thresholds for SpEx,
+global and per-sample gates for IDC). Both ARIs are measured on the clean
+points, so the columns stay comparable -- see the symmetry note at the IDC
+branch.
 
-Per dataset (iris, breast_cancer, digits, har):
-  perturbations = noise sigma in {0.01, 0.05, 0.10} and subsampling
-  {90%, 80%}, 3 repetitions each (perturbations.py, deterministic).
-
-  SpEx  (deterministic pipeline -> every change is attributable to the data):
-    spectral(X') -> tree' vs baseline tree:
-      split_jaccard   Jaccard of the split-feature sets
-      thr_drift       mean |delta threshold| over shared split features
-      ari_stability   ARI(tree'(X_common), tree_base(X_common)) on ORIGINAL X
-  IDC  (retrained on X' with the FIXED _best config and FIXED seed 0,
-        judged against its known seed-variance baseline):
-      gate_cos_global cosine of mean gate vectors
-      top15_jaccard   Jaccard of the top-15 mean-gate features
-      gate_cos_local  mean per-sample cosine on common points
-      ari_stability   ARI(labels', labels_base[idx])
-  idc_seed_baseline: mean pairwise ARI of the 5 existing _best seed runs —
-      the yardstick "how unstable is IDC under its own training noise".
+IDC is retrained with its fixed _best config and a fixed seed, so its numbers
+are read against idc_seed_baseline: the pairwise ARI of the five _best seed
+runs, i.e. how much IDC already moves under its own training noise.
 
 Outputs: results/perturbation/stability.json,
          notes/figures/perturbation_stability.png
@@ -55,13 +48,11 @@ DEV = "cuda" if torch.cuda.is_available() else "cpu"
 
 PY = os.path.join(HERE, "venv", "Scripts", "python.exe")
 DATASETS = ["iris", "breast_cancer", "digits", "har"]
-NOISE = [0.0, 0.01, 0.05, 0.10]   # 0.0 = retrain control: same data, same seed,
-                                   # but a fresh training run. Result: IDC
-                                   # retrains reproduce EXACTLY (ARI 1.000 in all
-                                   # 12 control runs), so the retrain noise is
-                                   # zero and every deviation at sigma > 0 is a
-                                   # genuine data effect. SpEx is deterministic
-                                   # there by construction.
+NOISE = [0.0, 0.01, 0.05, 0.10]   # 0.0 is the retrain control: same data, fresh
+                                   # run. IDC reproduced it EXACTLY (ARI 1.000 in
+                                   # all 12 control runs), so every deviation at
+                                   # sigma > 0 is a data effect, not training
+                                   # noise. SpEx is deterministic by construction.
 SUBS = [0.9, 0.8]
 REPS = [0, 1, 2]
 

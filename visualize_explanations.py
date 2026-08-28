@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Proposal working step 3: visualize and interpret the explanations of SpEx
-and IDC on the low-dimensional and classical tabular datasets.
+"""The figures for the qualitative part: what the two explanation objects
+actually look like on the low-dimensional and classical tabular datasets.
 
-Outputs (PNG, 300 dpi, light chart chrome) into notes/figures/:
-  <ds>_partition.png   2-D datasets: spectral reference | SpEx tree partition
-                       with its axis-parallel cuts drawn | IDC clusters (tuned)
-  <ds>_heatmap.png     tabular: per-sample explanation matrices, SpEx |SHAP|
-                       vs IDC gates, one shared sample order -> the
-                       piecewise-constant-vs-per-sample contrast is visible
-  <ds>_tree.png        SpEx tree as a rule diagram with real feature names
-                       (thresholds in MinMax-scaled units)
+Into notes/figures/, at 300 dpi:
+  <ds>_partition.png   2-D sets: reference | SpEx tree with its axis-parallel
+                       cuts drawn | IDC clusters
+  <ds>_heatmap.png     tabular sets: both explanation matrices in one shared
+                       sample order, so the piecewise-constant-per-cluster
+                       against per-sample contrast is directly visible
+  <ds>_tree.png        the SpEx tree as a rule diagram with real feature names
 
-Colors follow the validated reference palette of the dataviz method:
-categorical slots in fixed order for cluster identity (slot 4 yellow is
-skipped in scatter/all-pairs use — documented yellow-beside-orange failure —
-identity is additionally direct-labeled), one blue light->dark ramp for
-magnitude, text in ink tokens, hairline axes.
+Cluster identity always uses the same categorical slots in the same order and
+is direct-labeled as well, magnitude always one blue ramp — so colour means
+the same thing in every figure of the thesis.
 """
 import os, sys
 import numpy as np

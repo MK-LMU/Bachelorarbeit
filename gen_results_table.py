@@ -208,8 +208,7 @@ def main():
                    if r.get("kmeans_ari") is not None else "")
         lines += ["", f"## {NAMES[ds]}  (N={r['N']}, D={r['D']}, K={r['K']}, "
                       f"seeds={r['seeds']}, IDC config: {cfg_label(ds, r).strip('*')}"
-                      f"{km_note})",
-                  "", "| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |", "|---|---|---|"]
+                      f"{km_note})"]
 
         zs, zi = r.get("spex_zero_gate_seeds", []), r.get("idc_zero_gate_seeds", [])
         if zs or zi:
@@ -217,15 +216,19 @@ def main():
             # yet the distance metrics still return numbers (uniqueness 0,
             # nn-identical 1.0, diversity at the ceiling). Say so, or "said
             # nothing" reads as "maximally stable and maximally diverse".
+            # This goes ABOVE the table: a blockquote between the header and the
+            # first row ends the table, and every row after it renders as prose.
             parts = []
             if zs:
                 parts.append(f"SpEx seeds {zs}")
             if zi:
                 parts.append(f"IDC seeds {zi}")
-            lines += [f"> **All gates zero** in {' and '.join(parts)}: those runs "
+            lines += ["", f"> **All gates zero** in {' and '.join(parts)}: those runs "
                       "produced no explanation at all. The granularity and diversity "
                       "rows below still show numbers for them, but those numbers "
-                      "describe an empty matrix, not a coarse one.", ""]
+                      "describe an empty matrix, not a coarse one."]
+
+        lines += ["", "| metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |", "|---|---|---|"]
 
         corr = idc_corr_faithfulness(ds, r["seeds"])
         spex_corr = (fmt(r["spex"]["faithfulness_corr"])

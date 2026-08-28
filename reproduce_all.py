@@ -23,9 +23,9 @@ train_all.py, the resumable variant of the training loop below. tune_idc.py,
 reselect_best.py and perturbation_stability.py skip existing results by
 themselves.
 
-Not part of this list: results/results_<ds>.json (legacy files of the first
-single-seed comparisons, produced by archive/compare_final.py and others).
-They do not feed RESULTS_MULTISEED.md and are kept only as provenance.
+Not part of this list: results/results_<ds>.json, left over from the first
+single-seed comparisons. They do not feed RESULTS_MULTISEED.md and are kept
+only as provenance.
 """
 import os
 import shutil

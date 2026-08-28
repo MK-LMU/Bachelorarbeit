@@ -1,42 +1,28 @@
-"""Correctness test suite for the SpEx -> SHAP pipeline.
+"""Correctness test suite for the SpEx -> SHAP pipeline, on real data
+(Breast Cancer, Wine, Digits).
 
-Part 1 — independent validations on REAL data (Breast Cancer, Wine, Digits).
-Five angles that fail independently; a converter that is wrong in a consistent
-way would pass any test comparing it only to itself.
+Part 1 — five angles that fail independently; a converter that is wrong in a
+consistent way would pass any test comparing it only to itself.
 
-  functional equivalence  -> the converted dict encodes the SAME clustering
-                             function as the SpEx tree (argmax of routed leaf
-                             == tree.predict, leaves one-hot).
-  node weights            -> node_sample_weight matches an INDEPENDENT
-                             re-derivation (route each sample, count arrivals)
-                             and satisfies parent == left + right. Without this
-                             a wrong weight array would shift every SHAP value
-                             and still pass all the other checks.
-  format round-trip       -> bit-identical to sklearn's native explainer,
-                             EXCEPT two Breast Cancer samples. The cause is
-                             NOT a tie-break: shap casts X to float32 for a
-                             native sklearn model but keeps float64 for a
-                             custom-tree dict, so a comparison x <= t can flip
-                             at one off-path node (verified: no node on either
-                             sample's path sits on its threshold). Both
-                             explainers route the samples to the SAME leaf;
-                             only the cold-path conditional expectation moves.
-                             Our float64 evaluation is the exact one, which the
-                             brute-force test confirms.
-  additivity              -> base_value + sum(SHAP) == model output.
-  model-agnostic          -> shap.KernelExplainer, a completely different
-                             algorithm that knows nothing about trees.
-  brute force             -> the exact path-dependent Shapley values computed
-                             straight from the definition. GROUND TRUTH for
-                             the path-dependent variant.
+  functional equivalence  the dict encodes the SAME function as the tree
+  node weights            node_sample_weight matches an independent
+                          re-derivation (route each sample, count arrivals);
+                          a wrong weight array shifts every SHAP value while
+                          passing all the other checks
+  format round-trip       bit-identical to sklearn's native explainer
+  additivity              base_value + sum(SHAP) == model output
+  model-agnostic          shap.KernelExplainer, which knows nothing about trees
+  brute force             Shapley values straight from the definition —
+                          ground truth for the path-dependent variant
 
-Part 2 — remaining gaps:
+The round-trip has two exceptions, both Breast Cancer samples, and the cause is
+not a tie-break: shap casts X to float32 for a native sklearn model but keeps
+float64 for a custom-tree dict, so one off-path comparison flips. Both
+explainers reach the same leaf; only the cold-path conditional expectation
+moves, and the float64 evaluation is the exact one.
 
-  over-segmentation  k' > k: converter stays exact, and per-sample
-                     explanations start to VARY within a reference cluster.
-  empty leaves       converting with a data subset must not crash;
-                     RULE: always convert with the full training data.
-  high-dim           practicality: 2000 x 512 end-to-end timing.
+Part 2 — the remaining gaps: over-segmentation (k' > k), empty leaves (hence
+the rule to always convert with the full training data), and 2000 x 512 timing.
 """
 import os
 import sys

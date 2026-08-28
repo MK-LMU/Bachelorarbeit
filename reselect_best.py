@@ -1,34 +1,22 @@
 # -*- coding: utf-8 -*-
 """Re-selection of the tuning winners with the K-CONSTRAINED silhouette rule.
 
-The plain-silhouette rule (tune_idc.py phase 1) prefers coarse partitions:
-on HAR it picked a 2-of-6-cluster solution (sil 0.481, ARI 0.331) over the
-full 6-cluster one (sil 0.122, ARI 0.527). Fix — still fully unsupervised:
+Plain silhouette (tune_idc.py phase 1) prefers coarse partitions: on HAR it
+picked a 2-of-6-cluster solution (sil 0.481) over the full 6-cluster one
+(sil 0.122). The fix stays fully unsupervised -- only candidates that USE the
+requested K clusters are admissible, and among those the silhouette decides;
+if none reaches K, those with the most used clusters. K is part of the task,
+not a label.
 
-  RULE 2: only candidates that actually USE the requested K clusters are
-  admissible (a 2-cluster answer to a 6-cluster task is degenerate); among
-  them the silhouette decides. Fallback if no candidate reaches K: the
-  candidates with the maximum number of used clusters.
+The rule-2 winner is re-derived from the logged grid in
+results/tuning/selection.json -- no phase-1 retraining. Where the winner
+changes, the rule-1 `_best` runs are archived as `_bestsil` and the missing
+rule-2 seeds are trained.
 
-NOTE on the record: because entry["winner"] is read as the rule-1 value, a
-SECOND run copies the rule-2 winner into winner_sil_rule1 and the two fields
-become identical (that is the current state of selection.json for all 8
-datasets). The rule-1 evidence survives elsewhere: the complete `grid` array
-stays in selection.json, and the archived `_bestsil` runs in artifacts/tuning/
-show the rule changed the winner on iris, digits, har and cifar10.
-
-This script re-derives the rule-2 winner per dataset from the logged grid
-(results/tuning/selection.json — NO phase-1 retraining), archives the
-rule-1 `_best` seed runs where the winner changes (renamed to `_bestsil`
-inside artifacts/tuning/ as evidence), and trains the missing rule-2 seed
-runs under the canonical `_best` tag.
-
-Run this ONCE after the last tune_idc.py call: it reads entry["winner"], so a
-second pass overwrites winner_sil_rule1 with the rule-2 winner and the two
-fields become identical (which is the current state of selection.json). The
-rule-1 evidence survives regardless: the full `grid` stays in selection.json
-(HAR still shows the 2-cluster candidate at sil 0.481) and the archived
-`_bestsil` runs stay in artifacts/tuning/.
+Run this ONCE after the last tune_idc.py call: it reads entry["winner"] as the
+rule-1 value, so a second pass copies the rule-2 winner into winner_sil_rule1
+and the two become identical (the current state for all 8 datasets). The rule-1
+evidence survives in the full `grid` and in the archived `_bestsil` runs.
 """
 import os, sys, json, shutil, glob, subprocess, time
 import numpy as np
@@ -43,6 +31,10 @@ K_OF = {"two_moons": 2, "blobs": 5, "iris": 3, "breast_cancer": 2,
 
 
 def rule2_winner(entry, K):
+    """Silhouette among the candidates that actually use the requested K.
+    K is the task, not a label, so this stays label-free. If no candidate
+    reaches K the pool falls back to those with the most clusters found --
+    otherwise a dataset where every config collapses would have no winner."""
     grid = entry["grid"]
     full = [c for c in grid if c["n_used_clusters"] == K]
     pool = full if full else [c for c in grid if c["n_used_clusters"] ==

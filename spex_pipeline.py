@@ -1,9 +1,8 @@
 """The SpEx side of the comparison — the core pipeline function.
 
 spex_side(): SpectralClustering reference -> CliqueBased tree -> Tree SHAP
--> |SHAP| gate matrix (N, D). Imported by evaluate.py, perturbation_stability.py,
-reference_selection.py and the equivalence check in metrics.py. (Extracted from
-the legacy compare_final.py, which lives in archive/ and re-imports from here.)
+-> |SHAP| gate matrix (N, D). Every caller that needs SpEx explanations goes
+through this one function, so no two of them can build the tree differently.
 """
 import os, sys
 import numpy as np

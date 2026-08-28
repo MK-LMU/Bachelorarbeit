@@ -91,11 +91,12 @@ def make_cfg(name, X, K, epochs, device):
         "start_global_gates_training_on_epoch": int(epochs * 0.75),
         "mask_percentage": 0.5, "latent_noise_std": 0.01,
         "trainer": {"devices": 1, "accelerator": device, "max_epochs": epochs,
-                    # deterministic=False: parts of IDC's encoder/GTCR path have no
-        # deterministic CUDA kernel, so Lightning would abort. seed_everything()
-        # still fixes init and shuffling, and empirically retrains reproduce
-        # exactly -- see the sigma=0 control in perturbation_stability.py.
-        "deterministic": False, "logger": False,
+                    # Parts of IDC's encoder/GTCR path have no deterministic
+                    # CUDA kernel, so Lightning would abort. seed_everything()
+                    # still fixes init and shuffling, and retrains reproduce
+                    # exactly -- see the sigma=0 control in
+                    # perturbation_stability.py.
+                    "deterministic": False, "logger": False,
                     "log_every_n_steps": 5, "check_val_every_n_epoch": max(1, epochs // 10),
                     "enable_checkpointing": False, "num_sanity_val_steps": 0,
                     "enable_progress_bar": False},
