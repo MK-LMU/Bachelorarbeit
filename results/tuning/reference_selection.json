@@ -1,0 +1,540 @@
+{
+  "two_moons": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.4643,
+        "n_used_clusters": 2,
+        "ari_logged_not_used": 0.6446
+      },
+      "kmeans": {
+        "silhouette": 0.4906,
+        "n_used_clusters": 2,
+        "ari_logged_not_used": 0.4786
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.8285,
+        "std": 0.0,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.4314,
+        "std": 0.0,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.3484,
+        "std": 0.0,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.4792,
+        "std": 0.0008,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.5202,
+        "std": 0.0008,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.1123,
+        "std": 0.0,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.3184,
+        "std": 0.0,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.994,
+        "std": 0.0,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 14.4602,
+        "std": 0.0,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.3285,
+        "std": 0.0,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.3285,
+        "std": 0.0,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.8413,
+        "std": 0.0105,
+        "n": 5
+      }
+    }
+  },
+  "blobs": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.5578,
+        "n_used_clusters": 5,
+        "ari_logged_not_used": 0.8728
+      },
+      "kmeans": {
+        "silhouette": 0.5587,
+        "n_used_clusters": 5,
+        "ari_logged_not_used": 0.871
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.9271,
+        "std": 0.0002,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.8326,
+        "std": 0.0003,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.8215,
+        "std": 0.0006,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.8719,
+        "std": 0.0009,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.9165,
+        "std": 0.0019,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.3856,
+        "std": 0.0265,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.6692,
+        "std": 0.0389,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.9895,
+        "std": 0.055,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.9893,
+        "std": 0.0004,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 53.1407,
+        "std": 0.0029,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.5354,
+        "std": 0.0009,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.6312,
+        "std": 0.0006,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.8507,
+        "std": 0.0191,
+        "n": 5
+      }
+    }
+  },
+  "iris": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.5066,
+        "n_used_clusters": 3,
+        "ari_logged_not_used": 0.7445
+      },
+      "kmeans": {
+        "silhouette": 0.5048,
+        "n_used_clusters": 3,
+        "ari_logged_not_used": 0.7163
+      }
+    },
+    "winner": "spectral",
+    "flip_vs_fixed_spectral": false
+  },
+  "breast_cancer": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.3794,
+        "n_used_clusters": 2,
+        "ari_logged_not_used": 0.7984
+      },
+      "kmeans": {
+        "silhouette": 0.3845,
+        "n_used_clusters": 2,
+        "ari_logged_not_used": 0.7302
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.9174,
+        "std": 0.0,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.6939,
+        "std": 0.0,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.5884,
+        "std": 0.0,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.7302,
+        "std": 0.0,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.8358,
+        "std": 0.0,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.0604,
+        "std": 0.0,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.1383,
+        "std": 0.0,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.9438,
+        "std": 0.0,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 46.1926,
+        "std": 0.0,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.29,
+        "std": 0.0,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.29,
+        "std": 0.0,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.9099,
+        "std": 0.0147,
+        "n": 5
+      }
+    }
+  },
+  "digits": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.1599,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.8147
+      },
+      "kmeans": {
+        "silhouette": 0.1812,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.6718
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.5859,
+        "std": 0.0007,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.3622,
+        "std": 0.0054,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.5102,
+        "std": 0.0009,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.6696,
+        "std": 0.0037,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.4612,
+        "std": 0.0041,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.098,
+        "std": 0.0011,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.2732,
+        "std": 0.0014,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.1974,
+        "std": 0.0016,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.7578,
+        "std": 0.001,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 53.8297,
+        "std": 1.7079,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.1929,
+        "std": 0.0054,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.3927,
+        "std": 0.0128,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.5611,
+        "std": 0.0238,
+        "n": 5
+      }
+    }
+  },
+  "har": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.0832,
+        "n_used_clusters": 6,
+        "ari_logged_not_used": 0.5073
+      },
+      "kmeans": {
+        "silhouette": 0.1328,
+        "n_used_clusters": 6,
+        "ari_logged_not_used": 0.4609
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.6016,
+        "std": 0.0001,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.4952,
+        "std": 0.001,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.6158,
+        "std": 0.0006,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.461,
+        "std": 0.0002,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.8275,
+        "std": 0.0009,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.0141,
+        "std": 0.0004,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.0333,
+        "std": 0.0006,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.0334,
+        "std": 0.0007,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.9164,
+        "std": 0.0002,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 56.3068,
+        "std": 0.0395,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.1207,
+        "std": 0.0001,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.3544,
+        "std": 0.0001,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.5776,
+        "std": 0.0046,
+        "n": 5
+      }
+    }
+  },
+  "cifar10": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.0321,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.4151
+      },
+      "kmeans": {
+        "silhouette": 0.0269,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.461
+      }
+    },
+    "winner": "spectral",
+    "flip_vs_fixed_spectral": false
+  },
+  "mnist": {
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "candidates": {
+      "spectral": {
+        "silhouette": 0.0415,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.57
+      },
+      "kmeans": {
+        "silhouette": 0.0624,
+        "n_used_clusters": 10,
+        "ari_logged_not_used": 0.3421
+      }
+    },
+    "winner": "kmeans",
+    "flip_vs_fixed_spectral": true,
+    "kmeans_ref_pipeline": {
+      "ACC": {
+        "mean": 0.4173,
+        "std": 0.0008,
+        "n": 5
+      },
+      "ARI": {
+        "mean": 0.2184,
+        "std": 0.0011,
+        "n": 5
+      },
+      "NMI": {
+        "mean": 0.3278,
+        "std": 0.0005,
+        "n": 5
+      },
+      "ref_ARI": {
+        "mean": 0.3422,
+        "std": 0.0007,
+        "n": 5
+      },
+      "tree_vs_ref_ARI": {
+        "mean": 0.3476,
+        "std": 0.0031,
+        "n": 5
+      },
+      "uniqueness": {
+        "mean": 0.0256,
+        "std": 0.0004,
+        "n": 5
+      },
+      "uniqueness_rownorm": {
+        "mean": 0.0766,
+        "std": 0.0006,
+        "n": 5
+      },
+      "stability_k5": {
+        "mean": 0.0517,
+        "std": 0.0008,
+        "n": 5
+      },
+      "nn_identical_frac": {
+        "mean": 0.7026,
+        "std": 0.0044,
+        "n": 5
+      },
+      "diversity_fixed": {
+        "mean": 48.1615,
+        "std": 0.0506,
+        "n": 5
+      },
+      "faithfulness_top1drop": {
+        "mean": 0.1401,
+        "std": 0.004,
+        "n": 5
+      },
+      "faithfulness_aopc": {
+        "mean": 0.2633,
+        "std": 0.0034,
+        "n": 5
+      },
+      "generalizability": {
+        "mean": 0.4366,
+        "std": 0.0106,
+        "n": 5
+      }
+    }
+  }
+}

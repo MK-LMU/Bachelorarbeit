@@ -1,0 +1,47 @@
+# Umgebung
+venv/
+__pycache__/
+*.pyc
+
+# grosse, regenerierbare Artefakte (siehe README "Setup & Reproduktion":
+# train_all.py erzeugt artifacts/, Logs entstehen bei jedem Lauf neu)
+artifacts/
+logs/
+
+# lokale Daten-Downloads werden ohnehin unter artifacts/data/ gehalten
+
+# Entpackter PBMC-Datensatz aus IDCs Repo: 2,7 GB und damit weit ueber GitHubs
+# 100-MB-Grenze pro Datei — der Push wuerde daran scheitern. Die ausgelieferte
+# pbmc_x.zip (17,7 MB) bleibt im Repo, die entpackte Fassung ist daraus
+# jederzeit wiederherstellbar. Von dieser Arbeit wird PBMC nicht verwendet.
+IDC/data/pbmc_x.npz
+
+# Legacy-Ergebnisse der ersten Einzel-Seed-Vergleiche. Ihr Erzeuger
+# (archive/compare_final.py) liegt seit dem Repo-Zuschnitt selbst nicht mehr im
+# Repo; sie fliessen in keine Zahl der Arbeit ein. Sie bleiben lokal als
+# Herkunftsnachweis. Die Ausnahme haelt die kanonischen Multiseed-Dateien drin —
+# ohne sie wuerde das Muster auch results_multiseed_*.json erfassen.
+results/results_*.json
+!results/results_multiseed_*.json
+
+# Ergebnisse der vier Pruefskripte, die bis zur Absprache mit dem Betreuer in
+# notes/ausgelagert/ liegen. Die Skripte schreiben ueber wpaths.results() weiter
+# hierher — ein Verschieben der Dateien wuerde gegen ihren eigenen Ausgabepfad
+# arbeiten, deshalb werden sie an Ort und Stelle zurueckgehalten.
+results/arch_check.json
+results/gener_scale_check.json
+results/faithfulness_masking_check.json
+
+# Doku und Arbeitsnotizen der Arbeit: Befundprotokoll (FINDINGS.md), Gutachten
+# (REVIEW.md), Code-Uebersicht, Lese-Anleitung der Abbildungen, Lernmaterial,
+# Gespraechsvorbereitung, Gliederung, Paper-PDFs.
+# Im Repo bleiben nur Code + generierte Ergebnisse (RESULTS_MULTISEED.md,
+# figures/*.png) sowie README.md und VENDORED.md (Lizenzen des Fremdcodes).
+notes/
+
+# Ueberholte Vorgaenger-Skripte und der Pre-per-seed-Ergebnisstand. Bleiben
+# lokal als Provenienz (und lauffaehig, weil sie die Projektwurzel als
+# Elternordner aufloesen), gehoeren aber nicht ins veroeffentlichte Repo.
+# Die beiden Experimente daraus, deren Befunde die Arbeit zitiert
+# (compare_kprime.py, check_uniq_scale.py), liegen jetzt in der Wurzel.
+archive/

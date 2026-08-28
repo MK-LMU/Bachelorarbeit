@@ -1,0 +1,14 @@
+# Exakte Versionen der Umgebung, in der alle berichteten Zahlen entstanden sind
+# (Python 3.13.5, Windows). Stand 2026-08-22.
+numba==0.65.1
+numpy==2.4.4
+scikit-learn==1.9.0
+scipy==1.18.0          # < 1.20 zwingend: scipy.spatial.distance_matrix (IDC-Original UND Fast-Path) wird in 1.20 entfernt
+shap==0.52.0
+matplotlib==3.11.0
+munkres==1.1.4
+omegaconf==2.3.1
+pytorch-lightning==2.6.5
+tqdm==4.68.3
+torch==2.11.0          # CUDA-Build passend zur GPU waehlen; hier 2.11.0+cu128 (--index-url https://download.pytorch.org/whl/cu128)
+torchvision==0.26.0    # dito (0.26.0+cu128); nur fuer extract_cifar.py / extract_mnist_feats.py

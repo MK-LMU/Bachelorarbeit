@@ -1,0 +1,14 @@
+# Zeilenenden im Repository normalisieren (LF), im Arbeitsverzeichnis
+# plattformüblich auschecken. Muss im ERSTEN Commit liegen — später greift die
+# Normalisierung erst beim nächsten Anfassen jeder Datei.
+* text=auto
+
+# Fremdcode-Shell/Make: CRLF macht sie unter Unix unbrauchbar
+*.sh     text eol=lf
+Makefile text eol=lf
+
+# Binärdateien niemals anfassen
+*.png binary
+*.gif binary
+*.zip binary
+*.npz binary
