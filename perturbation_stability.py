@@ -12,7 +12,7 @@ points, so the columns stay comparable -- see the symmetry note at the IDC
 branch.
 
 IDC is retrained with its fixed _best config and a fixed seed, so its numbers
-are read against idc_seed_baseline: the pairwise ARI of the five _best seed
+are read against idc_seed_baseline: the pairwise ARI of the _best seed
 runs, i.e. how much IDC already moves under its own training noise.
 
 Outputs: results/perturbation/stability.json,
@@ -40,7 +40,8 @@ import dataset as idc_dataset
 from dataset import ClusteringDataset
 import train_evaluate
 
-from wpaths import idc_out, PERTURB, RESULTS_PERTURB, RESULTS_TUNING, FIGURES
+from wpaths import (idc_out, PERTURB, RESULTS_PERTURB, RESULTS_TUNING,
+                    FIGURES, CAMPAIGN_SEEDS)
 from perturbations import perturb, tag_of
 from spex_pipeline import spex_side
 
@@ -115,6 +116,25 @@ def idc_perturbed(ds, spec, lgl, epochs):
     return np.load(out)
 
 
+def check_cached_config(ds, spec, lgl, epochs):
+    """Does a cached perturbation run carry the config we would train with now?
+
+    Same question idc_perturbed() asks, but reachable on the cached path. A
+    mismatch means the stored numbers compare a baseline trained with one
+    config against a perturbed run trained with another.
+    """
+    ckpt = os.path.join(PERTURB, f"idc_model_{ds}{tag_of(spec)}_seed0.pt")
+    if not os.path.exists(ckpt):
+        return
+    got = torch.load(ckpt, map_location="cpu", weights_only=False)
+    if (got.get("lgl"), got.get("epochs")) != (lgl, epochs):
+        raise SystemExit(
+            f"[{ds} {spec}] CACHED run was trained with lgl={got.get('lgl')}, "
+            f"epochs={got.get('epochs')}, but the current winner is lgl={lgl}, "
+            f"epochs={epochs}. Delete artifacts/perturbation/*{tag_of(spec)}* "
+            f"and results/perturbation/stability.json, then rerun.")
+
+
 def idc_labels_on(ds, spec, X_eval, y, K):
     """Rebuild the perturbed IDC model from its persisted checkpoint and label
     X_eval with it. No training -- the .pt files in artifacts/perturbation/ hold
@@ -147,6 +167,11 @@ def main():
 
     for ds in (sys.argv[1:] or DATASETS):
         print("=" * 72); print(f"PERTURBATION {ds}"); print("=" * 72, flush=True)
+        # Seed 0 on purpose, and it stays. RQ2 measures a DIFFERENCE at a
+        # fixed seed -- clean run against perturbed run -- so whatever the
+        # selection seed carries cancels between the two sides. Moving to a
+        # reported seed would invalidate 72 cached perturbation runs to change
+        # nothing that the measure can see.
         d0 = np.load(idc_out(f"idc_out_{ds}_best_seed0.npz"))
         X = np.ascontiguousarray(d0["X"], float)
         y, K = d0["y_true"].astype(int), int(d0["K"])
@@ -157,9 +182,9 @@ def main():
         splits_b = split_set(tree_b)
         gates_b = np.ascontiguousarray(d0["gates"], float)
         labels_b_idc = d0["labels_pred"].astype(int)
-        # IDC seed-noise yardstick: pairwise ARI of the 5 _best seed labelings
+        # IDC seed-noise yardstick: pairwise ARI of the _best seed labelings
         seed_labels = []
-        for s in range(5):
+        for s in CAMPAIGN_SEEDS:
             p = idc_out(f"idc_out_{ds}_best_seed{s}.npz")
             if os.path.exists(p):
                 seed_labels.append(np.load(p)["labels_pred"].astype(int))
@@ -177,10 +202,24 @@ def main():
         entry["idc_seed_baseline_ari"] = round(float(np.mean(pair)), 4)
         entry["winner_config"] = {"lgl": w["lgl"], "epochs": w["epochs"]}
         entry.setdefault("conditions", {})
+        # Write the yardstick back NOW, not only when a condition is computed.
+        # It is derived from the _best seed runs, so it moves whenever their
+        # number does -- while the perturbation conditions stay cached. Storing
+        # it inside the loop below meant a fully-cached rerun recomputed the
+        # value, printed it, drew it into the figure and then discarded it,
+        # leaving JSON and figure disagreeing.
+        res[ds] = entry
+        json.dump(res, open(res_path, "w"), indent=2)
 
         for kind, params in (("noise", NOISE), ("subsample", SUBS)):
             for p in params:
                 if f"{kind}:{p}" in entry["conditions"]:
+                    # Verify the cached condition even though nothing is
+                    # recomputed. The guard inside idc_perturbed() only runs on
+                    # the path that trains, so a cached run whose config no
+                    # longer matches the tuning winner would sail through --
+                    # exactly the case the guard exists for.
+                    check_cached_config(ds, f"{kind}:{p}:0", w["lgl"], w["epochs"])
                     continue
                 reps = []
                 for r_ in REPS:

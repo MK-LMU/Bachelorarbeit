@@ -7,7 +7,7 @@ import os, sys, subprocess, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from wpaths import DATA, idc_out
+from wpaths import DATA, idc_out, CAMPAIGN_SEEDS
 
 PY = os.path.join(HERE, "venv", "Scripts", "python.exe")
 
@@ -25,7 +25,7 @@ def step(name, args):
 if not os.path.exists(os.path.join(DATA, "mnist_feats.npz")):
     step("extract features", [os.path.join(HERE, "extract_mnist_feats.py")])
 
-for s in range(5):
+for s in CAMPAIGN_SEEDS:
     if not os.path.exists(idc_out(f"idc_out_mnist_feats_seed{s}.npz")):
         step(f"default seed {s}", [os.path.join(HERE, "run_idc.py"),
                                    "--data", "mnist_feats", "--seed", str(s)])

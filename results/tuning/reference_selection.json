@@ -1,6 +1,6 @@
 {
   "two_moons": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.4643,
@@ -19,72 +19,72 @@
       "ACC": {
         "mean": 0.8285,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "ARI": {
         "mean": 0.4314,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "NMI": {
         "mean": 0.3484,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "ref_ARI": {
-        "mean": 0.4792,
-        "std": 0.0008,
-        "n": 5
+        "mean": 0.4796,
+        "std": 0.0007,
+        "n": 10
       },
       "tree_vs_ref_ARI": {
-        "mean": 0.5202,
-        "std": 0.0008,
-        "n": 5
+        "mean": 0.5206,
+        "std": 0.0007,
+        "n": 10
       },
       "uniqueness": {
         "mean": 0.1123,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "uniqueness_rownorm": {
         "mean": 0.0,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "stability_k5": {
         "mean": 0.3184,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "nn_identical_frac": {
         "mean": 0.994,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 14.4602,
+        "mean": 0.0,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "faithfulness_top1drop": {
         "mean": 0.3285,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "faithfulness_aopc": {
         "mean": 0.3285,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.8413,
-        "std": 0.0105,
-        "n": 5
+        "mean": 0.8328,
+        "std": 0.0143,
+        "n": 10
       }
     }
   },
   "blobs": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.5578,
@@ -103,72 +103,72 @@
       "ACC": {
         "mean": 0.9271,
         "std": 0.0002,
-        "n": 5
+        "n": 10
       },
       "ARI": {
-        "mean": 0.8326,
-        "std": 0.0003,
-        "n": 5
+        "mean": 0.8325,
+        "std": 0.0002,
+        "n": 10
       },
       "NMI": {
-        "mean": 0.8215,
-        "std": 0.0006,
-        "n": 5
+        "mean": 0.8213,
+        "std": 0.0004,
+        "n": 10
       },
       "ref_ARI": {
-        "mean": 0.8719,
-        "std": 0.0009,
-        "n": 5
+        "mean": 0.8721,
+        "std": 0.0005,
+        "n": 10
       },
       "tree_vs_ref_ARI": {
-        "mean": 0.9165,
-        "std": 0.0019,
-        "n": 5
+        "mean": 0.9164,
+        "std": 0.0012,
+        "n": 10
       },
       "uniqueness": {
-        "mean": 0.3856,
-        "std": 0.0265,
-        "n": 5
+        "mean": 0.3797,
+        "std": 0.0188,
+        "n": 10
       },
       "uniqueness_rownorm": {
-        "mean": 0.6692,
-        "std": 0.0389,
-        "n": 5
+        "mean": 0.6605,
+        "std": 0.0275,
+        "n": 10
       },
       "stability_k5": {
-        "mean": 0.9895,
-        "std": 0.055,
-        "n": 5
+        "mean": 0.9772,
+        "std": 0.0389,
+        "n": 10
       },
       "nn_identical_frac": {
-        "mean": 0.9893,
-        "std": 0.0004,
-        "n": 5
+        "mean": 0.9894,
+        "std": 0.0003,
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 53.1407,
-        "std": 0.0029,
-        "n": 5
+        "mean": 47.6701,
+        "std": 0.0604,
+        "n": 10
       },
       "faithfulness_top1drop": {
-        "mean": 0.5354,
-        "std": 0.0009,
-        "n": 5
+        "mean": 0.5352,
+        "std": 0.0006,
+        "n": 10
       },
       "faithfulness_aopc": {
-        "mean": 0.6312,
-        "std": 0.0006,
-        "n": 5
+        "mean": 0.6311,
+        "std": 0.0004,
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.8507,
-        "std": 0.0191,
-        "n": 5
+        "mean": 0.8418,
+        "std": 0.0195,
+        "n": 10
       }
     }
   },
   "iris": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.5066,
@@ -185,7 +185,7 @@
     "flip_vs_fixed_spectral": false
   },
   "breast_cancer": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.3794,
@@ -204,72 +204,72 @@
       "ACC": {
         "mean": 0.9174,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "ARI": {
         "mean": 0.6939,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "NMI": {
         "mean": 0.5884,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "ref_ARI": {
         "mean": 0.7302,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "tree_vs_ref_ARI": {
         "mean": 0.8358,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "uniqueness": {
         "mean": 0.0604,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "uniqueness_rownorm": {
         "mean": 0.0,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "stability_k5": {
         "mean": 0.1383,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "nn_identical_frac": {
         "mean": 0.9438,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 46.1926,
+        "mean": 0.0,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "faithfulness_top1drop": {
         "mean": 0.29,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "faithfulness_aopc": {
         "mean": 0.29,
         "std": 0.0,
-        "n": 5
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.9099,
-        "std": 0.0147,
-        "n": 5
+        "mean": 0.9117,
+        "std": 0.0131,
+        "n": 10
       }
     }
   },
   "digits": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.1599,
@@ -286,74 +286,74 @@
     "flip_vs_fixed_spectral": true,
     "kmeans_ref_pipeline": {
       "ACC": {
-        "mean": 0.5859,
-        "std": 0.0007,
-        "n": 5
+        "mean": 0.5878,
+        "std": 0.007,
+        "n": 10
       },
       "ARI": {
-        "mean": 0.3622,
-        "std": 0.0054,
-        "n": 5
+        "mean": 0.3658,
+        "std": 0.0176,
+        "n": 10
       },
       "NMI": {
-        "mean": 0.5102,
-        "std": 0.0009,
-        "n": 5
+        "mean": 0.5133,
+        "std": 0.0101,
+        "n": 10
       },
       "ref_ARI": {
-        "mean": 0.6696,
-        "std": 0.0037,
-        "n": 5
+        "mean": 0.6673,
+        "std": 0.0048,
+        "n": 10
       },
       "tree_vs_ref_ARI": {
-        "mean": 0.4612,
-        "std": 0.0041,
-        "n": 5
+        "mean": 0.4628,
+        "std": 0.0085,
+        "n": 10
       },
       "uniqueness": {
-        "mean": 0.098,
-        "std": 0.0011,
-        "n": 5
+        "mean": 0.0967,
+        "std": 0.0055,
+        "n": 10
       },
       "uniqueness_rownorm": {
-        "mean": 0.2732,
-        "std": 0.0014,
-        "n": 5
+        "mean": 0.2661,
+        "std": 0.0215,
+        "n": 10
       },
       "stability_k5": {
-        "mean": 0.1974,
-        "std": 0.0016,
-        "n": 5
+        "mean": 0.1959,
+        "std": 0.0072,
+        "n": 10
       },
       "nn_identical_frac": {
-        "mean": 0.7578,
-        "std": 0.001,
-        "n": 5
+        "mean": 0.7613,
+        "std": 0.0113,
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 53.8297,
-        "std": 1.7079,
-        "n": 5
+        "mean": 55.3494,
+        "std": 2.2901,
+        "n": 10
       },
       "faithfulness_top1drop": {
-        "mean": 0.1929,
-        "std": 0.0054,
-        "n": 5
+        "mean": 0.2135,
+        "std": 0.0692,
+        "n": 10
       },
       "faithfulness_aopc": {
-        "mean": 0.3927,
-        "std": 0.0128,
-        "n": 5
+        "mean": 0.3978,
+        "std": 0.0124,
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.5611,
-        "std": 0.0238,
-        "n": 5
+        "mean": 0.5772,
+        "std": 0.0186,
+        "n": 10
       }
     }
   },
   "har": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.0832,
@@ -370,74 +370,74 @@
     "flip_vs_fixed_spectral": true,
     "kmeans_ref_pipeline": {
       "ACC": {
-        "mean": 0.6016,
+        "mean": 0.6017,
         "std": 0.0001,
-        "n": 5
+        "n": 10
       },
       "ARI": {
-        "mean": 0.4952,
-        "std": 0.001,
-        "n": 5
+        "mean": 0.4956,
+        "std": 0.0008,
+        "n": 10
       },
       "NMI": {
-        "mean": 0.6158,
-        "std": 0.0006,
-        "n": 5
+        "mean": 0.616,
+        "std": 0.0005,
+        "n": 10
       },
       "ref_ARI": {
         "mean": 0.461,
         "std": 0.0002,
-        "n": 5
+        "n": 10
       },
       "tree_vs_ref_ARI": {
-        "mean": 0.8275,
-        "std": 0.0009,
-        "n": 5
+        "mean": 0.8277,
+        "std": 0.0008,
+        "n": 10
       },
       "uniqueness": {
-        "mean": 0.0141,
-        "std": 0.0004,
-        "n": 5
+        "mean": 0.014,
+        "std": 0.0003,
+        "n": 10
       },
       "uniqueness_rownorm": {
-        "mean": 0.0333,
-        "std": 0.0006,
-        "n": 5
+        "mean": 0.0331,
+        "std": 0.0004,
+        "n": 10
       },
       "stability_k5": {
-        "mean": 0.0334,
-        "std": 0.0007,
-        "n": 5
+        "mean": 0.0332,
+        "std": 0.0005,
+        "n": 10
       },
       "nn_identical_frac": {
         "mean": 0.9164,
-        "std": 0.0002,
-        "n": 5
+        "std": 0.0001,
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 56.3068,
-        "std": 0.0395,
-        "n": 5
+        "mean": 55.6885,
+        "std": 0.0636,
+        "n": 10
       },
       "faithfulness_top1drop": {
         "mean": 0.1207,
         "std": 0.0001,
-        "n": 5
+        "n": 10
       },
       "faithfulness_aopc": {
-        "mean": 0.3544,
+        "mean": 0.3545,
         "std": 0.0001,
-        "n": 5
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.5776,
-        "std": 0.0046,
-        "n": 5
+        "mean": 0.5888,
+        "std": 0.0109,
+        "n": 10
       }
     }
   },
   "cifar10": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.0321,
@@ -454,7 +454,7 @@
     "flip_vs_fixed_spectral": false
   },
   "mnist": {
-    "criterion": "silhouette (unsupervised, same protocol as IDC's grid \u00a7h.9); ARI logged only",
+    "criterion": "silhouette (unsupervised, same protocol as IDC's grid in tune_idc.py); ARI logged only",
     "candidates": {
       "spectral": {
         "silhouette": 0.0415,
@@ -472,68 +472,68 @@
     "kmeans_ref_pipeline": {
       "ACC": {
         "mean": 0.4173,
-        "std": 0.0008,
-        "n": 5
+        "std": 0.0009,
+        "n": 10
       },
       "ARI": {
-        "mean": 0.2184,
-        "std": 0.0011,
-        "n": 5
+        "mean": 0.2185,
+        "std": 0.001,
+        "n": 10
       },
       "NMI": {
-        "mean": 0.3278,
-        "std": 0.0005,
-        "n": 5
+        "mean": 0.3277,
+        "std": 0.0004,
+        "n": 10
       },
       "ref_ARI": {
-        "mean": 0.3422,
-        "std": 0.0007,
-        "n": 5
+        "mean": 0.3426,
+        "std": 0.001,
+        "n": 10
       },
       "tree_vs_ref_ARI": {
-        "mean": 0.3476,
-        "std": 0.0031,
-        "n": 5
+        "mean": 0.3467,
+        "std": 0.0025,
+        "n": 10
       },
       "uniqueness": {
-        "mean": 0.0256,
-        "std": 0.0004,
-        "n": 5
+        "mean": 0.0258,
+        "std": 0.0003,
+        "n": 10
       },
       "uniqueness_rownorm": {
-        "mean": 0.0766,
-        "std": 0.0006,
-        "n": 5
+        "mean": 0.0767,
+        "std": 0.0005,
+        "n": 10
       },
       "stability_k5": {
-        "mean": 0.0517,
-        "std": 0.0008,
-        "n": 5
+        "mean": 0.052,
+        "std": 0.0005,
+        "n": 10
       },
       "nn_identical_frac": {
-        "mean": 0.7026,
-        "std": 0.0044,
-        "n": 5
+        "mean": 0.7016,
+        "std": 0.0034,
+        "n": 10
       },
       "diversity_fixed": {
-        "mean": 48.1615,
-        "std": 0.0506,
-        "n": 5
+        "mean": 48.5552,
+        "std": 0.0914,
+        "n": 10
       },
       "faithfulness_top1drop": {
-        "mean": 0.1401,
-        "std": 0.004,
-        "n": 5
+        "mean": 0.1393,
+        "std": 0.0031,
+        "n": 10
       },
       "faithfulness_aopc": {
-        "mean": 0.2633,
-        "std": 0.0034,
-        "n": 5
+        "mean": 0.2628,
+        "std": 0.0028,
+        "n": 10
       },
       "generalizability": {
-        "mean": 0.4366,
-        "std": 0.0106,
-        "n": 5
+        "mean": 0.4358,
+        "std": 0.0103,
+        "n": 10
       }
     }
   }

@@ -18,6 +18,10 @@ from wpaths import DATA, idc_out
 
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 
+# Deliberately seed 0 and deliberately NOT parametrised: mnist_feats is
+# DERIVED from these X, so changing the source would redefine the dataset and
+# invalidate every mnist_feats number ever reported. X is identical across
+# seeds anyway; the fixed reference is for provenance, not for correctness.
 d = np.load(idc_out("idc_out_mnist_seed0.npz"))
 X_px = np.ascontiguousarray(d["X"], np.float32)      # (10000, 784) in [0,1]
 y = d["y_true"].astype(int)

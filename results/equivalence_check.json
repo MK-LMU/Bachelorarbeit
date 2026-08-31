@@ -1,9 +1,37 @@
 {
   "max_abs_diff_overall": 0.0,
-  "n_numeric_comparisons": 89,
+  "n_numeric_comparisons": 153,
   "n_nonfinite_comparisons": 23,
   "note": "n_nonfinite are both-nan or both-inf pairs: the two implementations agree the value is undefined or infinite, which is an agreement but not a numeric check. Datasets with duplicate rows (iris) are almost entirely non-finite; their dedup variant carries the numeric proof.",
   "cases": {
+    "tie_grid_duplicates_400x4": {
+      "sparse": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 0,
+        "n_nan": 4,
+        "n_inf": 0
+      },
+      "leaf_constant": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 0,
+        "n_nan": 4,
+        "n_inf": 0
+      }
+    },
+    "tie_grid_nodup_400x4": {
+      "sparse": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "leaf_constant": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      }
+    },
     "two_moons": {
       "idc": {
         "max_abs_diff": 0.0,
@@ -161,63 +189,108 @@
       }
     },
     "har": {
-      "idc": 0.0,
-      "spex": 0.0,
-      "rand_dense": 0.0,
-      "rand_sparse": 0.0
-    },
-    "cifar10": {
-      "idc": 0.0,
-      "spex": 0.0,
-      "rand_dense": 0.0,
-      "rand_sparse": 0.0
-    },
-    "mnist": {
-      "idc": 0.0,
-      "spex": 0.0,
-      "rand_dense": 0.0,
-      "rand_sparse": 0.0
-    },
-    "mnist_feats": {
-      "idc": 0.0,
-      "spex": 0.0,
-      "rand_dense": 0.0,
-      "rand_sparse": 0.0
-    },
-    "tie_grid_duplicates_400x4": {
-      "sparse": {
-        "max_abs_diff": 0.0,
-        "n_numeric": 0,
-        "n_nan": 4,
-        "n_inf": 0
-      },
-      "leaf_constant": {
-        "max_abs_diff": 0.0,
-        "n_numeric": 0,
-        "n_nan": 4,
-        "n_inf": 0
-      }
-    },
-    "tie_grid_nodup_400x4": {
-      "sparse": {
+      "idc": {
         "max_abs_diff": 0.0,
         "n_numeric": 4,
         "n_nan": 0,
         "n_inf": 0
       },
-      "leaf_constant": {
+      "spex": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_dense": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_sparse": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      }
+    },
+    "cifar10": {
+      "idc": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "spex": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_dense": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_sparse": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      }
+    },
+    "mnist": {
+      "idc": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "spex": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_dense": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_sparse": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      }
+    },
+    "mnist_feats": {
+      "idc": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "spex": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_dense": {
+        "max_abs_diff": 0.0,
+        "n_numeric": 4,
+        "n_nan": 0,
+        "n_inf": 0
+      },
+      "rand_sparse": {
         "max_abs_diff": 0.0,
         "n_numeric": 4,
         "n_nan": 0,
         "n_inf": 0
       }
     }
-  },
-  "cases_without_counts": [
-    "cifar10",
-    "har",
-    "mnist",
-    "mnist_feats"
-  ],
-  "note_on_legacy_cases": "These cases were verified by an earlier run, before the comparison counters were added: their max_abs_diff is the measured 0.0, but the numeric/non-finite split was not recorded and they are NOT included in the totals above. Rerun `python metrics.py cifar10 har mnist mnist_feats` to fill them in (hours -- see the runtime note in this file)."
+  }
 }

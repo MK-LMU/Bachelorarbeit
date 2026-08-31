@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.join(HERE, "SpEx"))
 
 import shap
 
-from wpaths import idc_out
+from wpaths import idc_out, CAMPAIGN_SEEDS
 from spex_pipeline import spex_side
 from tree_shap_spex import spex_tree_to_shap_dict, to_NDK
 from test_correctness import (dict_tree_predict, exact_path_dependent_shap,
@@ -48,9 +48,11 @@ N_BRUTE = 40
 
 
 def check_dataset(ds):
-    p = idc_out(f"idc_out_{ds}_seed0.npz")
+    # Only X/y/K are taken from here (identical across seeds); the tree is
+    # SpEx's own and deterministic. Read a REPORTED seed all the same.
+    p = idc_out(f"idc_out_{ds}_seed{CAMPAIGN_SEEDS[0]}.npz")
     if not os.path.exists(p):
-        print(f"[{ds}] no seed-0 npz, skipped")
+        print(f"[{ds}] no npz for seed {CAMPAIGN_SEEDS[0]}, skipped")
         return None
     d = np.load(p)
     X = np.ascontiguousarray(d["X"], float)

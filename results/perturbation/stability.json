@@ -1,6 +1,6 @@
 {
   "iris": {
-    "idc_seed_baseline_ari": 0.3449,
+    "idc_seed_baseline_ari": 0.3675,
     "winner_config": {
       "lgl": 1.0,
       "epochs": 300
@@ -417,7 +417,7 @@
     }
   },
   "breast_cancer": {
-    "idc_seed_baseline_ari": 0.5103,
+    "idc_seed_baseline_ari": 0.6245,
     "winner_config": {
       "lgl": 0.01,
       "epochs": 300
@@ -834,7 +834,7 @@
     }
   },
   "digits": {
-    "idc_seed_baseline_ari": 0.1828,
+    "idc_seed_baseline_ari": 0.2025,
     "winner_config": {
       "lgl": 0.01,
       "epochs": 120
@@ -1251,7 +1251,7 @@
     }
   },
   "har": {
-    "idc_seed_baseline_ari": 0.5493,
+    "idc_seed_baseline_ari": 0.5007,
     "winner_config": {
       "lgl": 0.01,
       "epochs": 300

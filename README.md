@@ -4,7 +4,10 @@ Code and results for a bachelor's thesis. Two interpretable clustering methods p
 very different explanation objects: SpEx an axis-parallel rule tree, IDC learned
 per-sample feature gates. This repository converts the SpEx tree into SHAP's custom-tree
 format so that both yield an `(N, D)` importance matrix, and then scores both with IDC's
-own metric code, imported verbatim — so that no measured difference can originate in the
+own metric code — imported unchanged except for the corrections labelled at their
+definition (`faithfulness_k`: the dataset's real K instead of IDC's hardcoded 10,
+int-cast of the inference output, nan below 2 usable features) — so that no measured
+difference can originate in the
 evaluation itself.
 
 [English](#english) · [Deutsch](#deutsch)
@@ -23,7 +26,8 @@ python -m venv venv
 
 `reproduce_all.py` is the map. It lists every program invocation behind the reported
 numbers, in dependency order and commented; read it before anything else. Without `--dry`
-it executes the lot (~13 h, GPU and CPU). One prerequisite no script creates:
+it executes the lot; the runtime estimate lives there. One prerequisite no
+script creates:
 `artifacts/data/har_data.npz`, built once from the UCI HAR dataset.
 
 Every script states in its own docstring why it exists and what it establishes, so there
@@ -33,7 +37,8 @@ additions of this work) and `evaluate.py` (one pass per dataset, both methods).
 
 ### Results
 
-`RESULTS_MULTISEED.md` is the canonical table — mean ± std over five seeds, all metrics,
+`RESULTS_MULTISEED.md` is the canonical table — mean ± std over ten seeds (1–10; seed 0
+is the configuration-search seed and is not reported), all metrics,
 19 dataset variants. It is generated from `results/*.json` by `gen_results_table.py`;
 don't edit it by hand. `results/` also holds the standalone checks: significance tests,
 the metric equivalence proof, the tuning protocols and the RQ2 stability study.
@@ -82,7 +87,8 @@ python -m venv venv
 
 `reproduce_all.py` ist die Landkarte. Die Datei listet jeden Programmaufruf hinter den
 berichteten Zahlen, in Abhängigkeitsreihenfolge und kommentiert; sie gehört zuerst
-gelesen. Ohne `--dry` läuft alles durch (ca. 13 h, GPU und CPU). Eine Voraussetzung
+gelesen. Ohne `--dry` läuft alles durch; die Laufzeitangabe steht dort. Eine
+Voraussetzung
 erzeugt kein Skript: `artifacts/data/har_data.npz`, einmalig aus dem UCI-HAR-Datensatz
 gebaut.
 
@@ -95,7 +101,8 @@ Datensatz, beide Verfahren).
 ### Ergebnisse
 
 `RESULTS_MULTISEED.md` ist die kanonische Tabelle — Mittelwert ± Standardabweichung über
-fünf Seeds, alle Metriken, 19 Datensatz-Varianten. Sie wird von `gen_results_table.py`
+zehn Seeds (1–10; Seed 0 ist der Konfigurations-Suchseed und wird nicht berichtet),
+alle Metriken, 19 Datensatz-Varianten. Sie wird von `gen_results_table.py`
 aus `results/*.json` erzeugt und nicht von Hand bearbeitet. In `results/` liegen außerdem
 die freistehenden Prüfungen: Signifikanztests, der Metrik-Äquivalenzbeweis, die
 Tuning-Protokolle und die RQ2-Stabilitätsstudie.

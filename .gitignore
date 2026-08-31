@@ -1,47 +1,38 @@
-# Umgebung
+# Environment
 venv/
 __pycache__/
 *.pyc
 
-# grosse, regenerierbare Artefakte (siehe README "Setup & Reproduktion":
-# train_all.py erzeugt artifacts/, Logs entstehen bei jedem Lauf neu)
+# Large, regenerable artefacts: train_all.py rebuilds artifacts/, and every run
+# writes its own logs. Downloaded data also lands under artifacts/data/.
 artifacts/
 logs/
 
-# lokale Daten-Downloads werden ohnehin unter artifacts/data/ gehalten
-
-# Entpackter PBMC-Datensatz aus IDCs Repo: 2,7 GB und damit weit ueber GitHubs
-# 100-MB-Grenze pro Datei — der Push wuerde daran scheitern. Die ausgelieferte
-# pbmc_x.zip (17,7 MB) bleibt im Repo, die entpackte Fassung ist daraus
-# jederzeit wiederherstellbar. Von dieser Arbeit wird PBMC nicht verwendet.
+# IDC ships PBMC as pbmc_x.zip (17.7 MB, kept). The unpacked npz is 2.7 GB and
+# would fail GitHub's 100 MB per-file limit; it is restorable from the zip at
+# any time, and this work does not use PBMC.
 IDC/data/pbmc_x.npz
 
-# Legacy-Ergebnisse der ersten Einzel-Seed-Vergleiche. Ihr Erzeuger
-# (archive/compare_final.py) liegt seit dem Repo-Zuschnitt selbst nicht mehr im
-# Repo; sie fliessen in keine Zahl der Arbeit ein. Sie bleiben lokal als
-# Herkunftsnachweis. Die Ausnahme haelt die kanonischen Multiseed-Dateien drin —
-# ohne sie wuerde das Muster auch results_multiseed_*.json erfassen.
+# Legacy single-seed results. They feed no number in the thesis and stay local
+# as provenance. The exception keeps the canonical multi-seed files in -- the
+# pattern would otherwise swallow results_multiseed_*.json too.
 results/results_*.json
 !results/results_multiseed_*.json
 
-# Ergebnisse der vier Pruefskripte, die bis zur Absprache mit dem Betreuer in
-# notes/ausgelagert/ liegen. Die Skripte schreiben ueber wpaths.results() weiter
-# hierher — ein Verschieben der Dateien wuerde gegen ihren eigenen Ausgabepfad
-# arbeiten, deshalb werden sie an Ort und Stelle zurueckgehalten.
+# Results of the four check scripts held back pending the supervisor
+# discussion. The scripts write here via wpaths.results(), so moving the files
+# would work against their own output path; they are withheld in place.
 results/arch_check.json
 results/gener_scale_check.json
 results/faithfulness_masking_check.json
 
-# Doku und Arbeitsnotizen der Arbeit: Befundprotokoll (FINDINGS.md), Gutachten
-# (REVIEW.md), Code-Uebersicht, Lese-Anleitung der Abbildungen, Lernmaterial,
-# Gespraechsvorbereitung, Gliederung, Paper-PDFs.
-# Im Repo bleiben nur Code + generierte Ergebnisse (RESULTS_MULTISEED.md,
-# figures/*.png) sowie README.md und VENDORED.md (Lizenzen des Fremdcodes).
+# The thesis' own documentation: findings log, review, figure reading guide,
+# drafts, outline, paper PDFs. Only code and generated results are published
+# (RESULTS_MULTISEED.md, README.md, VENDORED.md for the vendored licences).
 notes/
 
-# Ueberholte Vorgaenger-Skripte und der Pre-per-seed-Ergebnisstand. Bleiben
-# lokal als Provenienz (und lauffaehig, weil sie die Projektwurzel als
-# Elternordner aufloesen), gehoeren aber nicht ins veroeffentlichte Repo.
-# Die beiden Experimente daraus, deren Befunde die Arbeit zitiert
-# (compare_kprime.py, check_uniq_scale.py), liegen jetzt in der Wurzel.
+# Superseded predecessor scripts and the pre-per-seed result state. Kept
+# locally as provenance and still runnable, since they resolve the project root
+# as their parent folder. The two experiments whose findings the thesis cites
+# now live in the repository root.
 archive/

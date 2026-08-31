@@ -16,7 +16,7 @@ Three choices are worth knowing:
     datasets it beats both explainable methods.
 
 Seeds: the SpEx side is deterministic -- every tree-dependent metric has std
-0.000 across the 5 spectral seeds (on CIFAR/MNIST the reference itself moves by
+0.000 across the spectral seeds (on CIFAR/MNIST the reference itself moves by
 ~1e-4 without changing the tree). generalizability varies by design, its 70/30
 split uses the seed identically for both methods.
 
@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.join(HERE, "SpEx"))
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 
-from wpaths import idc_out, results
+from wpaths import idc_out, results, CAMPAIGN_SEEDS
 from metrics import (get_accuracy, diversity, generalizability, row_normalize,
                      faithfulness_k, faithfulness_drop, diversity_fixed,
                      precompute_nn, uniqueness_pre, stability_pre,
@@ -45,9 +45,9 @@ DATASETS = ["two_moons", "two_moons_tuned", "two_moons_best",
             "digits", "digits_best", "har", "har_best",
             "cifar10", "cifar10_best", "mnist",
             "mnist_feats", "mnist_feats_best"]
-SEEDS = {}          # every dataset uses 5 seeds (MNIST started with 3 and was
-                    # extended to 5 as well — see DEFAULT_SEEDS)
-DEFAULT_SEEDS = [0, 1, 2, 3, 4]
+SEEDS = {}          # per-dataset override; empty means every dataset uses the
+                    # campaign default below
+DEFAULT_SEEDS = CAMPAIGN_SEEDS
 
 _km_cache = {}
 
@@ -129,14 +129,44 @@ def evaluate_dataset(ds):
             row["uniqueness_dedup"] = uniqueness_pre(gates[keep], nn_d_dd, nn_i_dd, k=2)
             row["stability_k5_dedup"] = stability_pre(gates[keep], nn_d_dd, nn_i_dd, k=5)
 
-    # Seeds whose gate matrix is identically zero. Such a run produced NO
-    # explanation at all, yet every distance metric happily reports a number:
-    # uniqueness 0, stability 0, nn_identical_frac 1.0 and diversity 100 --
-    # 'said nothing' reads as maximally stable and maximally diverse. The
-    # values are kept (they are what the metric returns) but flagged here so
-    # the results table can mark them.
+    # Three ways a run can produce metric numbers that describe nothing. The
+    # values are kept -- they are what the metric returns -- but flagged, so
+    # the results table can say what the reader is looking at.
+    #
+    #   zero      the gate matrix is identically 0: no explanation at all, yet
+    #             uniqueness 0, stability 0, nn_identical_frac 1.0, diversity
+    #             100 -- "said nothing" reads as maximally stable and diverse.
+    #   constant  the gate matrix has exactly ONE distinct row: every sample
+    #             gets the same explanation. The distance metrics collapse to
+    #             the same numbers as `zero`, but `np.any(gates > 0)` is True,
+    #             so the zero test misses it entirely. This is the case on the
+    #             tuned 2-D synthetics, where ARI/ACC look competitive.
+    #   empty_med every cluster's MEDIAN gate vector is all-zero. IDC's
+    #             original diversity then scores jaccard(empty, empty) = 0 for
+    #             every pair and reports its maximum 100 -- for the opposite of
+    #             the reason the name suggests. Independent of the other two:
+    #             CIFAR-10 and MNIST-feats hit it with dense, varied gates.
+    def degenerate(gm):
+        """(all-zero, one distinct row, all median gate sets empty)"""
+        zero = not np.any(gm > 0)
+        const = len(np.unique(gm.round(12), axis=0)) == 1
+        med_empty = all(not np.any(np.median(gm[y == c], axis=0) > 0)
+                        for c in range(K) if np.any(y == c))
+        return zero, const, med_empty
+
+    # The ungated reference for generalizability. That metric trains a
+    # LinearSVC on X * gates to predict the TRUE class labels, so it measures
+    # how much of X's linear separability survives the gating -- a method that
+    # gates nothing scores highest. Without this row a dense-gate method looks
+    # like it "generalises better" when it has merely kept the input intact.
+    # Same idea as the sigma=0 control: a condition whose expected result is
+    # known (Adebayo et al. 2018; the metric-level version is Tomsett et al.
+    # 2020, and Hooker et al. 2019 name the confound directly).
+    plain_rows = []
     spex_rows, idc_rows = [], []
     spex_zero, idc_zero = [], []
+    spex_const, idc_const = [], []
+    spex_medempty, idc_medempty = [], []
     for s in have:
         # ---- SpEx side (spectral seed = s) ----
         tree, labels, gates, ref = spex_side(X, K, y, seed=s, return_ref=True)
@@ -147,7 +177,19 @@ def evaluate_dataset(ds):
         row.update(dist_block(gates, nn_d, nn_i))
         row["diversity"] = float(diversity(y, gates, num_clusters=K, num_features=D))
         row["generalizability"] = gener_split(X, gates, y, s)
-        fd = faithfulness_drop(gates, X, infer, y, D, K)
+        # gates = 1 everywhere: X * gates == X, i.e. no explanation applied.
+        plain_rows.append({"generalizability_plain_x":
+                           gener_split(X, np.ones_like(gates), y, s)})
+        try:
+            # Guarded like faithfulness_corr below: masking can leave the tree
+            # predicting fewer than K labels, and IDC's get_accuracy indexes a
+            # K x K cost matrix with them. Unguarded that aborts the dataset
+            # instead of costing one metric.
+            fd = faithfulness_drop(gates, X, infer, y, D, K)
+        except Exception as e:
+            print(f"[{ds}] seed {s} faithfulness_drop error: {e}")
+            fd = {"faithfulness_top1drop": float("nan"),
+                  "faithfulness_aopc": float("nan")}
         row["faithfulness_top1drop"] = fd["faithfulness_top1drop"]
         row["faithfulness_aopc"] = fd["faithfulness_aopc"]
         try:
@@ -157,8 +199,10 @@ def evaluate_dataset(ds):
             print(f"[{ds}] seed {s} faithfulness_corr error: {e}")
             row["faithfulness_corr"] = float("nan")
         extras(gates, row)
-        if not np.any(gates > 0):
-            spex_zero.append(int(s))
+        z, c, me = degenerate(gates)
+        if z: spex_zero.append(int(s))
+        if c: spex_const.append(int(s))
+        if me: spex_medempty.append(int(s))
         spex_rows.append(row)
 
         # ---- IDC side (training seed = s, from campaign npz) ----
@@ -180,8 +224,10 @@ def evaluate_dataset(ds):
         # SpEx shows a number.
         row["faithfulness_corr"] = float(di["faithfulness"]) if "faithfulness" in di else float("nan")
         extras(g, row)
-        if not np.any(g > 0):
-            idc_zero.append(int(s))
+        z, c, me = degenerate(g)
+        if z: idc_zero.append(int(s))
+        if c: idc_const.append(int(s))
+        if me: idc_medempty.append(int(s))
         idc_rows.append(row)
         print(f"  seed {s} done", flush=True)
 
@@ -190,7 +236,12 @@ def evaluate_dataset(ds):
            "idc_config_validated": bool(d0["config_validated"]) if "config_validated" in d0 else (ds == "mnist"),
            "spex": agg(spex_rows), "idc": agg(idc_rows),
            "spex_zero_gate_seeds": spex_zero, "idc_zero_gate_seeds": idc_zero,
-           "kmeans_ari": kmeans_baseline(base, X, y, K)}
+           "spex_constant_gate_seeds": spex_const,
+           "idc_constant_gate_seeds": idc_const,
+           "spex_empty_median_seeds": spex_medempty,
+           "idc_empty_median_seeds": idc_medempty,
+           "kmeans_ari": kmeans_baseline(base, X, y, K),
+           "generalizability_plain_x": agg(plain_rows)["generalizability_plain_x"]}
 
     jp = results(f"results_multiseed_{ds}.json")
     json.dump(res, open(jp, "w"), indent=2)
@@ -206,9 +257,17 @@ def evaluate_dataset(ds):
             s_ = f"{a[m]['mean']:.3f}"
             return s_ + (f" ±{a[m]['std']:.3f}" if a[m]["std"] is not None else "")
         print(f"{m:<22}{f(res['spex']):>22}{f(res['idc']):>22}")
-    if spex_zero or idc_zero:
-        print(f"ALL-ZERO GATES -- SpEx seeds {spex_zero}, IDC seeds {idc_zero}: "
-              f"the distance metrics for those seeds describe an empty explanation")
+    for tag, sp, ic, what in (
+            ("ALL-ZERO GATES", spex_zero, idc_zero,
+             "the distance metrics describe an empty explanation"),
+            ("CONSTANT GATES", spex_const, idc_const,
+             "one explanation for every sample -- the distance metrics read "
+             "like perfect stability"),
+            ("EMPTY MEDIAN SETS", spex_medempty, idc_medempty,
+             "IDC's original diversity reports its maximum for the opposite "
+             "of the reason the name suggests")):
+        if sp or ic:
+            print(f"{tag} -- SpEx seeds {sp}, IDC seeds {ic}: {what}")
     print(f"k-means baseline ARI: {res['kmeans_ari']:.3f}")
     print(f"saved {os.path.basename(jp)}\n", flush=True)
 

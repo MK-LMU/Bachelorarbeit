@@ -222,12 +222,12 @@
     },
     "winner_sil_rule1": {
       "lgl": 1.0,
-      "epochs": 300,
-      "tag": "_g1.0e300",
-      "silhouette": 0.1536,
-      "ari_logged_not_used": 0.4152,
-      "n_used_clusters": 3,
-      "open_gates_per_sample": 1.0
+      "epochs": 120,
+      "tag": "_g1.0e120",
+      "silhouette": 0.63,
+      "ari_logged_not_used": 0.5681,
+      "n_used_clusters": 2,
+      "open_gates_per_sample": 2.0
     }
   },
   "breast_cancer": {
@@ -375,13 +375,13 @@
       "open_gates_per_sample": 49.96
     },
     "winner_sil_rule1": {
-      "lgl": 0.01,
+      "lgl": 0.1,
       "epochs": 120,
-      "tag": "_g0.01e120",
-      "silhouette": -0.0262,
-      "ari_logged_not_used": 0.1348,
-      "n_used_clusters": 5,
-      "open_gates_per_sample": 49.96
+      "tag": "_g0.1e120",
+      "silhouette": 0.1003,
+      "ari_logged_not_used": 0.1335,
+      "n_used_clusters": 2,
+      "open_gates_per_sample": 15.73
     }
   },
   "har": {
@@ -453,12 +453,12 @@
     },
     "winner_sil_rule1": {
       "lgl": 0.01,
-      "epochs": 300,
-      "tag": "_g0.01e300",
-      "silhouette": 0.122,
-      "ari_logged_not_used": 0.527,
-      "n_used_clusters": 6,
-      "open_gates_per_sample": 489.48
+      "epochs": 120,
+      "tag": "_g0.01e120",
+      "silhouette": 0.4807,
+      "ari_logged_not_used": 0.331,
+      "n_used_clusters": 2,
+      "open_gates_per_sample": 551.25
     }
   },
   "cifar10": {
@@ -529,13 +529,13 @@
       "open_gates_per_sample": 48.89
     },
     "winner_sil_rule1": {
-      "lgl": 0.1,
-      "epochs": 300,
-      "tag": "_g0.1e300",
-      "silhouette": 0.0208,
-      "ari_logged_not_used": 0.3397,
-      "n_used_clusters": 10,
-      "open_gates_per_sample": 48.89
+      "lgl": 1.0,
+      "epochs": 120,
+      "tag": "_g1.0e120",
+      "silhouette": 0.035,
+      "ari_logged_not_used": 0.2343,
+      "n_used_clusters": 4,
+      "open_gates_per_sample": 4.97
     }
   },
   "mnist_feats": {

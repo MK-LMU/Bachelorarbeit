@@ -32,6 +32,10 @@ from spex_pipeline import spex_side
 
 import wpaths
 FIGDIR = wpaths.FIGURES
+# The figures illustrate REPORTED runs. Seed 0 is the configuration-search seed
+# (wpaths.SELECTION_SEED) and is deliberately not part of the campaign, so the
+# panels must not be drawn from it.
+FIG_SEED = wpaths.CAMPAIGN_SEEDS[0]
 
 # ---- reference palette (dataviz skill, light mode) ----
 CAT = ["#2a78d6", "#eb6834", "#1baf7a", "#e87ba4", "#008300",
@@ -297,7 +301,7 @@ def fig_digits_pixels(tag=""):
     strength overlaid on the cluster's mean digit, used clusters only.
     tag='_best' renders the tuned-IDC variant for the before/after pair."""
     from matplotlib.patches import Rectangle, Patch
-    d = np.load(os.path.join(wpaths.IDC_OUT, f"idc_out_digits{tag}_seed0.npz"))
+    d = np.load(os.path.join(wpaths.IDC_OUT, f"idc_out_digits{tag}_seed{FIG_SEED}.npz"))
     X = np.ascontiguousarray(d["X"], float)
     y, K = d["y_true"].astype(int), int(d["K"])
     tree, spex_labels, _ = spex_side(X, K, y, seed=0)
@@ -391,10 +395,14 @@ def fig_mnist_pixels():
       3  the tree's rule path for the same sample (blue = must be dark,
          orange = must be light).
       4  the full SpEx tree the marks in row 3 come from.
-    The fair high-dimensional counterpart to the Digits figure."""
+    The fair high-dimensional counterpart to the Digits figure.
+
+    Writes THREE files: the combined figure (mnist_pixel_importance.png,
+    unchanged layout) plus the sample rows and the tree as standalone
+    figures (…_rows.png, …_tree.png) so LaTeX can place each larger."""
     from matplotlib.patches import Patch
     from matplotlib.lines import Line2D
-    d = np.load(os.path.join(wpaths.IDC_OUT, "idc_out_mnist_seed0.npz"))
+    d = np.load(os.path.join(wpaths.IDC_OUT, f"idc_out_mnist_seed{FIG_SEED}.npz"))
     X = np.ascontiguousarray(d["X"], float)
     y, K = d["y_true"].astype(int), int(d["K"])
     idc_gates = np.ascontiguousarray(d["gates"], float)
@@ -404,12 +412,6 @@ def fig_mnist_pixels():
     BLUE, ORANGE = CAT[0], CAT[1]
     samples = [int(np.where(y == dig)[0][0]) for dig in range(10)]
 
-    fig = plt.figure(figsize=(12.5, 8.6), constrained_layout=True)
-    gs = fig.add_gridspec(4, 10, height_ratios=[1, 1, 1, 1.75])
-    axes = np.array([[fig.add_subplot(gs[r, c]) for c in range(10)]
-                     for r in range(3)])
-    ax_tree = fig.add_subplot(gs[3, :])
-
     def base(ax, img):
         # lighter strokes so the importance overlays carry the contrast
         ax.imshow(img, cmap="gray_r", vmin=0, vmax=img.max() * 1.6)
@@ -417,123 +419,168 @@ def fig_mnist_pixels():
         for s in ax.spines.values():
             s.set_edgecolor(GRID)
 
-    for col, i in enumerate(samples):
-        img = X[i].reshape(28, 28)
-        n_open = int((idc_gates[i] > 0).sum())
-        top = np.argsort(idc_gates[i])[::-1][:15]
-        top = top[idc_gates[i][top] > 0]
+    # The drawing is split into helpers so the SAME code renders (a) the
+    # combined overview, (b) the three sample rows alone and (c) the full tree
+    # alone. (b) and (c) exist for LaTeX: each can be placed as its own,
+    # larger figure; (a) is kept unchanged for the HTML notes.
 
-        ax = axes[0, col]
-        base(ax, img)
-        ax.scatter(top % 28, top // 28, s=22, marker="s", lw=0.4,
-                   color=BLUE, edgecolors=SURFACE)
-        ax.set_title(f"'{y[i]}' · {n_open} gates", fontsize=7.5, color=INK)
+    def draw_rows(axes):
+        for col, i in enumerate(samples):
+            img = X[i].reshape(28, 28)
+            n_open = int((idc_gates[i] > 0).sum())
+            top = np.argsort(idc_gates[i])[::-1][:15]
+            top = top[idc_gates[i][top] > 0]
 
-        # middle row: the ACTUAL TreeSHAP converter output, |SHAP| magnitudes —
-        # size AND ramp-color encode the contribution (double-encoded for pop)
-        ax = axes[1, col]
-        base(ax, img)
-        nz = np.where(spex_gates[i] > 0)[0]
-        v = spex_gates[i][nz] / max(spex_gates[i].max(), 1e-12)
-        ax.scatter(nz % 28, nz // 28, s=30 + 90 * v, marker="s",
-                   color=SEQ(0.45 + 0.55 * v), edgecolors=SURFACE, lw=0.6)
-        ax.set_title(f"{len(nz)} pixels · max {spex_gates[i].max():.2f}",
-                     fontsize=7.5, color=INK)
+            ax = axes[0, col]
+            base(ax, img)
+            ax.scatter(top % 28, top // 28, s=22, marker="s", lw=0.4,
+                       color=BLUE, edgecolors=SURFACE)
+            ax.set_title(f"'{y[i]}' · {n_open} gates", fontsize=7.5, color=INK)
 
-        ax = axes[2, col]
-        base(ax, img)
-        path, _ = paths[int(spex_labels[i])]
-        for f, thr, op in path:
-            ax.scatter([f % 28], [f // 28], s=52, marker="s", facecolors="none",
-                       edgecolors=BLUE if op == ">" else ORANGE, lw=1.8)
-        ax.set_title(f"{len(path)} tree questions", fontsize=7.5, color=INK)
+            # middle row: the ACTUAL TreeSHAP converter output, |SHAP|
+            # magnitudes — size AND ramp-color encode the contribution
+            # (double-encoded for pop)
+            ax = axes[1, col]
+            base(ax, img)
+            nz = np.where(spex_gates[i] > 0)[0]
+            v = spex_gates[i][nz] / max(spex_gates[i].max(), 1e-12)
+            ax.scatter(nz % 28, nz // 28, s=30 + 90 * v, marker="s",
+                       color=SEQ(0.45 + 0.55 * v), edgecolors=SURFACE, lw=0.6)
+            ax.set_title(f"{len(nz)} pixels · max {spex_gates[i].max():.2f}",
+                         fontsize=7.5, color=INK)
 
-    axes[0, 0].set_ylabel("IDC: top-15\ngates (|S|=15)", fontsize=8, color=INK2)
-    axes[1, 0].set_ylabel("SpEx: |SHAP|\n(converter output)", fontsize=8, color=INK2)
-    axes[2, 0].set_ylabel("SpEx: rule path\nof the tree", fontsize=8, color=INK2)
+            ax = axes[2, col]
+            base(ax, img)
+            path, _ = paths[int(spex_labels[i])]
+            for f, thr, op in path:
+                ax.scatter([f % 28], [f // 28], s=52, marker="s",
+                           facecolors="none",
+                           edgecolors=BLUE if op == ">" else ORANGE, lw=1.8)
+            ax.set_title(f"{len(path)} tree questions", fontsize=7.5, color=INK)
 
-    # ---- row 4: the FULL SpEx decision tree (the 9 questions the rows above
-    # mark on the samples), leaves = majority digit + purity + size ----
+        axes[0, 0].set_ylabel("IDC: top-15\ngates (|S|=15)", fontsize=8, color=INK2)
+        axes[1, 0].set_ylabel("SpEx: |SHAP|\n(converter output)", fontsize=8, color=INK2)
+        axes[2, 0].set_ylabel("SpEx: rule path\nof the tree", fontsize=8, color=INK2)
+
+    # ---- the FULL SpEx decision tree (the 9 questions the rows above mark
+    # on the samples), leaves = majority digit + purity + size ----
     root = tree.tree.root
 
     def n_leaves(c):
         return 1 if c.left is None else n_leaves(c.left) + n_leaves(c.right)
 
-    total_w = n_leaves(root)
-    ax_tree.set_xlim(0, total_w)
-    ax_tree.set_ylim(-5.4, 0.5)
-    ax_tree.axis("off")
+    def draw_tree(ax_tree, fs=6.8, fs_edge=6.0, lw_leaf=1.6, title_fs=8.5):
+        total_w = n_leaves(root)
+        ax_tree.set_xlim(0, total_w)
+        ax_tree.set_ylim(-5.4, 0.5)
+        ax_tree.axis("off")
 
-    def draw(c, idx, x0, dep):
-        w = n_leaves(c)
-        xc, yc = x0 + w / 2.0, -dep * 1.15
-        if c.left is None:
-            maj = int(np.bincount(y[idx], minlength=10).argmax()) if idx.size else 0
-            pur = np.bincount(y[idx], minlength=10).max() / max(1, idx.size)
-            ax_tree.text(xc, yc, f"'{maj}'\n{pur:.0%} · n={idx.size}",
-                         ha="center", va="center", fontsize=6.8, color=INK,
-                         bbox=dict(boxstyle="round,pad=0.3", fc=SURFACE,
-                                   ec=CAT[maj % len(CAT)], lw=1.6))
+        def draw(c, idx, x0, dep):
+            w = n_leaves(c)
+            xc, yc = x0 + w / 2.0, -dep * 1.15
+            if c.left is None:
+                maj = int(np.bincount(y[idx], minlength=10).argmax()) if idx.size else 0
+                pur = np.bincount(y[idx], minlength=10).max() / max(1, idx.size)
+                ax_tree.text(xc, yc, f"'{maj}'\n{pur:.0%} · n={idx.size}",
+                             ha="center", va="center", fontsize=fs, color=INK,
+                             bbox=dict(boxstyle="round,pad=0.3", fc=SURFACE,
+                                       ec=CAT[maj % len(CAT)], lw=lw_leaf))
+                return xc, yc
+            r_, c_ = divmod(int(c.coordinate), 28)
+            ax_tree.text(xc, yc, f"Px({r_},{c_})\n≤ {c.threshold:.2f}?",
+                         ha="center", va="center", fontsize=fs, color=INK,
+                         bbox=dict(boxstyle="round,pad=0.3", fc=SURFACE, ec=AXIS, lw=1.0))
+            m = X[idx, int(c.coordinate)] <= c.threshold
+            for child, cidx, cx0, lab in ((c.left, idx[m], x0, "light"),
+                                          (c.right, idx[~m], x0 + n_leaves(c.left), "dark")):
+                xch, ych = draw(child, cidx, cx0, dep + 1)
+                ax_tree.annotate("", xy=(xch, ych + 0.34), xytext=(xc, yc - 0.34),
+                                 arrowprops=dict(arrowstyle="-", color=AXIS, lw=0.9))
+                ax_tree.text((xc + xch) / 2, (yc + ych) / 2, lab, fontsize=fs_edge,
+                             color=ORANGE if lab == "light" else BLUE,
+                             ha="center", va="center",
+                             bbox=dict(boxstyle="round,pad=0.1", fc=SURFACE, ec="none"))
             return xc, yc
-        r_, c_ = divmod(int(c.coordinate), 28)
-        ax_tree.text(xc, yc, f"Px({r_},{c_})\n≤ {c.threshold:.2f}?",
-                     ha="center", va="center", fontsize=6.8, color=INK,
-                     bbox=dict(boxstyle="round,pad=0.3", fc=SURFACE, ec=AXIS, lw=1.0))
-        m = X[idx, int(c.coordinate)] <= c.threshold
-        for child, cidx, cx0, lab in ((c.left, idx[m], x0, "light"),
-                                      (c.right, idx[~m], x0 + n_leaves(c.left), "dark")):
-            xch, ych = draw(child, cidx, cx0, dep + 1)
-            ax_tree.annotate("", xy=(xch, ych + 0.34), xytext=(xc, yc - 0.34),
-                             arrowprops=dict(arrowstyle="-", color=AXIS, lw=0.9))
-            ax_tree.text((xc + xch) / 2, (yc + ych) / 2, lab, fontsize=6,
-                         color=ORANGE if lab == "light" else BLUE,
-                         ha="center", va="center",
-                         bbox=dict(boxstyle="round,pad=0.1", fc=SURFACE, ec="none"))
-        return xc, yc
 
-    draw(root, np.arange(len(X)), 0.0, 0)
-    ax_tree.set_title("The full SpEx tree: 9 pixel questions for 10,000 "
-                      "samples (leaves = majority digit · purity · size; "
-                      "edge color = answer light/dark)", fontsize=8.5,
-                      color=INK, loc="left")
+        draw(root, np.arange(len(X)), 0.0, 0)
+        ax_tree.set_title("The full SpEx tree: 9 pixel questions for 10,000 "
+                          "samples (leaves = majority digit · purity · size; "
+                          "edge color = answer light/dark)", fontsize=title_fs,
+                          color=INK, loc="left")
 
-    fig.legend(handles=[
-        Line2D([], [], marker="s", ls="", color=BLUE, ms=7,
-               label="IDC: gate open (top-15, validated config)"),
-        Line2D([], [], marker="s", ls="", color="#1c5cab", ms=9,
-               label="SpEx: size+color = |SHAP| contribution"),
-        Patch(facecolor="none", edgecolor=BLUE, lw=1.8,
-              label="tree question: must be DARK"),
-        Patch(facecolor="none", edgecolor=ORANGE, lw=1.8,
-              label="tree question: must be LIGHT")],
-        loc="lower center", ncol=4, fontsize=7.5, frameon=False,
-        bbox_to_anchor=(0.5, -0.06))
-    fig.suptitle("MNIST — per-sample explanations, ONE example per digit: "
-                 "IDC's gates vs. SpEx's Tree-SHAP attributions vs. the "
-                 "underlying tree rules", fontsize=9.5, color=INK)
+    def legend_handles():
+        return [
+            Line2D([], [], marker="s", ls="", color=BLUE, ms=7,
+                   label="IDC: gate open (top-15, validated config)"),
+            Line2D([], [], marker="s", ls="", color="#1c5cab", ms=9,
+                   label="SpEx: size+color = |SHAP| contribution"),
+            Patch(facecolor="none", edgecolor=BLUE, lw=1.8,
+                  label="tree question: must be DARK"),
+            Patch(facecolor="none", edgecolor=ORANGE, lw=1.8,
+                  label="tree question: must be LIGHT")]
+
+    SUPTITLE = ("MNIST — per-sample explanations, ONE example per digit: "
+                "IDC's gates vs. SpEx's Tree-SHAP attributions vs. the "
+                "underlying tree rules")
+
+    # ---- (a) combined overview: layout, sizes and fonts unchanged ----
+    fig = plt.figure(figsize=(12.5, 8.6), constrained_layout=True)
+    gs = fig.add_gridspec(4, 10, height_ratios=[1, 1, 1, 1.75])
+    axes = np.array([[fig.add_subplot(gs[r, c]) for c in range(10)]
+                     for r in range(3)])
+    ax_tree = fig.add_subplot(gs[3, :])
+    draw_rows(axes)
+    draw_tree(ax_tree)
+    fig.legend(handles=legend_handles(),
+               loc="lower center", ncol=4, fontsize=7.5, frameon=False,
+               bbox_to_anchor=(0.5, -0.06))
+    fig.suptitle(SUPTITLE, fontsize=9.5, color=INK)
     out = os.path.join(FIGDIR, "mnist_pixel_importance.png")
+    fig.savefig(out, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+
+    # ---- (b) the three sample rows alone (LaTeX: larger on the page) ----
+    fig = plt.figure(figsize=(12.5, 4.9), constrained_layout=True)
+    gs = fig.add_gridspec(3, 10)
+    axes = np.array([[fig.add_subplot(gs[r, c]) for c in range(10)]
+                     for r in range(3)])
+    draw_rows(axes)
+    fig.legend(handles=legend_handles(),
+               loc="lower center", ncol=4, fontsize=7.5, frameon=False,
+               bbox_to_anchor=(0.5, -0.04))
+    fig.suptitle(SUPTITLE, fontsize=9.5, color=INK)
+    out = os.path.join(FIGDIR, "mnist_pixel_importance_rows.png")
+    fig.savefig(out, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+
+    # ---- (c) the full tree alone, fonts scaled for a full-width figure ----
+    fig, ax_tree = plt.subplots(figsize=(12.5, 4.8), constrained_layout=True)
+    draw_tree(ax_tree, fs=9.5, fs_edge=8.5, lw_leaf=2.0, title_fs=11)
+    out = os.path.join(FIGDIR, "mnist_pixel_importance_tree.png")
     fig.savefig(out, dpi=300, bbox_inches="tight")
     plt.close(fig)
     print("wrote", out)
 
 
 def main():
-    fig_partition("two_moons", "idc_out_two_moons_tuned_seed0.npz")
-    fig_partition("blobs", "idc_out_blobs_tuned_seed0.npz")
-    fig_importance_space("two_moons", "idc_out_two_moons_tuned_seed0.npz")
+    fig_partition("two_moons", f"idc_out_two_moons_tuned_seed{FIG_SEED}.npz")
+    fig_partition("blobs", f"idc_out_blobs_tuned_seed{FIG_SEED}.npz")
+    fig_importance_space("two_moons", f"idc_out_two_moons_tuned_seed{FIG_SEED}.npz")
     fig_digits_pixels()
     fig_digits_pixels(tag="_best")
     fig_mnist_pixels()
 
     iris = load_iris()
-    fig_heatmap("iris", "idc_out_iris_seed0.npz", iris.feature_names)
-    fig_tree("iris", "idc_out_iris_seed0.npz", iris.feature_names,
+    fig_heatmap("iris", f"idc_out_iris_seed{FIG_SEED}.npz", iris.feature_names)
+    fig_tree("iris", f"idc_out_iris_seed{FIG_SEED}.npz", iris.feature_names,
              list(iris.target_names))
 
     bc = load_breast_cancer()
-    fig_heatmap("breast_cancer", "idc_out_breast_cancer_seed0.npz",
+    fig_heatmap("breast_cancer", f"idc_out_breast_cancer_seed{FIG_SEED}.npz",
                 bc.feature_names, max_feats=10)
-    fig_tree("breast_cancer", "idc_out_breast_cancer_seed0.npz",
+    fig_tree("breast_cancer", f"idc_out_breast_cancer_seed{FIG_SEED}.npz",
              bc.feature_names, list(bc.target_names))
 
 

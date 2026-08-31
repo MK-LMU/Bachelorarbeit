@@ -225,10 +225,16 @@ def main():
     # retraining (the original runs never persisted the model)
     model_dir = args.outdir or MODELS
     ckpt = os.path.join(model_dir, f"idc_model_{args.data}{args.tag}_seed{args.seed}.pt")
+    # `epochs` records what was actually TRAINED, not what was typed: the
+    # baseline runs are launched without --epochs, so args.epochs is 0 while
+    # line 187 resolves it to 120. A checkpoint claiming 0 reads as "untrained"
+    # to anything comparing configs (reselect_best, perturbation_stability).
+    # args.epochs is kept alongside so the invocation stays recoverable.
     torch.save({"state_dict": model.state_dict(),
                 "cfg": OmegaConf.to_container(cfg, resolve=True),
                 "seed": args.seed, "data": args.data, "lgl": args.lgl,
-                "epochs": args.epochs}, ckpt)
+                "epochs": int(cfg.trainer.max_epochs),
+                "epochs_arg": args.epochs}, ckpt)
     print("saved model:", ckpt)
 
     out = (os.path.join(args.outdir, f"idc_out_{args.data}{args.tag}_seed{args.seed}.npz")

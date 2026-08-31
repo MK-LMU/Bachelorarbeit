@@ -10,8 +10,8 @@ never used. Both always produce the requested K, so the K-constraint of that
 protocol is trivially met here.
 
 Phase 2: wherever the selection flips away from the fixed Spectral choice, the
-full SpEx pipeline is rerun on the winning reference over 5 seeds, so the
-effect on the comparison is quantified rather than assumed. Which datasets
+full SpEx pipeline is rerun on the winning reference over every campaign seed,
+so the effect on the comparison is quantified rather than assumed. Which sets
 flip cannot be predicted from their ARI — that is precisely the signal this
 protocol refuses to look at.
 
@@ -28,7 +28,7 @@ from sklearn.cluster import SpectralClustering, KMeans
 from sklearn.metrics import (silhouette_score, adjusted_rand_score,
                              normalized_mutual_info_score)
 
-from wpaths import idc_out, RESULTS_TUNING
+from wpaths import idc_out, RESULTS_TUNING, CAMPAIGN_SEEDS, N_SEEDS
 from metrics import (get_accuracy, diversity, generalizability, row_normalize,
                      faithfulness_drop, diversity_fixed,
                      precompute_nn, uniqueness_pre, stability_pre,
@@ -40,7 +40,9 @@ DATASETS = ["two_moons", "blobs", "iris", "breast_cancer", "digits",
 
 
 def load(ds):
-    d = np.load(idc_out(f"idc_out_{ds}_seed0.npz"))
+    # X/y/K are identical across seeds; read them from a REPORTED run so this
+    # file never depends on the selection seed.
+    d = np.load(idc_out(f"idc_out_{ds}_seed{CAMPAIGN_SEEDS[0]}.npz"))
     return (np.ascontiguousarray(d["X"], float), d["y_true"].astype(int),
             int(d["K"]))
 
@@ -76,11 +78,11 @@ def main():
 
     # ---- phase 2: full pipeline on the winning reference where it flipped
     for ds in [d for d in DATASETS if res[d]["flip_vs_fixed_spectral"]]:
-        print(f"\nPHASE 2: {ds} with the k-means reference (5 seeds)", flush=True)
+        print(f"\nPHASE 2: {ds} with the k-means reference ({N_SEEDS} seeds)", flush=True)
         X, y, K = load(ds)
         nn_d, nn_i = precompute_nn(X, kmax=5)
         rows = []
-        for s in range(5):
+        for s in CAMPAIGN_SEEDS:
             ref = KMeans(n_clusters=K, n_init=10, random_state=s).fit_predict(X)
             tree, labels, gates = spex_side(X, K, y, seed=s, ref=ref)
             infer = lambda Xm, t=tree: t.predict(np.ascontiguousarray(Xm, float)).astype(int)

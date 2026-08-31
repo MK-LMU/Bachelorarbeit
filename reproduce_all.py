@@ -6,7 +6,7 @@ RESULTS_MULTISEED.md, the result JSONs in results/ and the figures in
 notes/figures/.
 
     python reproduce_all.py --dry     # print the commands, compute nothing
-    python reproduce_all.py           # run everything (~13 h, GPU + CPU)
+    python reproduce_all.py           # run everything (~20 h, GPU + CPU)
 
 Prerequisites (once, created by no script):
   python -m venv venv
@@ -18,6 +18,12 @@ Prerequisites (once, created by no script):
       version and are not bit-identically re-extractable; use the original
       files for exact CIFAR / MNIST-feats numbers
 
+Runtime at 10 seeds, from the measured parts: the training loop below is
+~5 h on its own, evaluate.py ~1.5 h, and the equivalence proof in metrics.py
+several hours more (it rebuilds IDC's full N x N distance matrix per call).
+This is the only place that number lives; the README points here rather than
+repeating it.
+
 On repeating: run_idc.py ALWAYS retrains. To fill in missing runs only, use
 train_all.py, the resumable variant of the training loop below. tune_idc.py,
 reselect_best.py and perturbation_stability.py skip existing results by
@@ -27,12 +33,16 @@ Not part of this list: results/results_<ds>.json, left over from the first
 single-seed comparisons. They do not feed RESULTS_MULTISEED.md and are kept
 only as provenance.
 """
+import json
 import os
 import shutil
 import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from wpaths import CAMPAIGN_SEEDS          # one seed count for the whole campaign
+
 PY = os.path.join(HERE, "venv", "Scripts", "python.exe")
 DRY = "--dry" in sys.argv
 
@@ -66,12 +76,12 @@ run("test_metrics.py")                        # property tests of the metric lay
 run("extract_cifar.py")                       # -> artifacts/data/cifar_feats.npz
 
 # --------------------------------------------------------------------------
-# 3. Base training: IDC with the default config, 5 seeds per dataset
+# 3. Base training: IDC with the default config, every campaign seed
 #    (MNIST uses IDC's paper-validated config with 700 epochs and therefore
 #    needs ~15 min per run instead of seconds to minutes)
 # --------------------------------------------------------------------------
 for ds in DATASETS + ["mnist"]:
-    for seed in range(5):
+    for seed in CAMPAIGN_SEEDS:
         run("run_idc.py", "--data", ds, "--seed", str(seed))
 
 # --------------------------------------------------------------------------
@@ -79,9 +89,22 @@ for ds in DATASETS + ["mnist"]:
 #    default collapse on Two Moons / Blobs is caused by the configuration
 # --------------------------------------------------------------------------
 for ds in ["two_moons", "blobs"]:
-    for seed in range(5):
+    for seed in CAMPAIGN_SEEDS:
         run("run_idc.py", "--data", ds, "--lgl", "0.1", "--tag", "_tuned",
             "--seed", str(seed))
+
+# --------------------------------------------------------------------------
+# 4b. Seed 0 with the default config, every dataset. SELECTION_SEED is kept
+#     out of the reported seeds on purpose (see wpaths.py), but two later
+#     steps need its run as a DATA baseline: extract_mnist_feats.py reads
+#     idc_out_mnist_seed0.npz, and metrics.py (step 6) takes X from
+#     idc_out_<ds>_seed0.npz for every dataset -- without these files the
+#     former aborts and the latter silently skips all datasets. Found by the
+#     clean-copy reproduction of 2026-08-31 (repro_check/VERIFICATION_REPORT.md);
+#     the runs reproduce the historical files bit-exactly.
+# --------------------------------------------------------------------------
+for ds in DATASETS + ["mnist"]:
+    run("run_idc.py", "--data", ds, "--seed", "0")
 
 # --------------------------------------------------------------------------
 # 5. MNIST on ResNet features (proposal: "MNIST features")
@@ -90,8 +113,10 @@ for ds in ["two_moons", "blobs"]:
 #    10,000 samples
 # --------------------------------------------------------------------------
 run("extract_mnist_feats.py")                 # -> artifacts/data/mnist_feats.npz
-for seed in range(5):
+for seed in CAMPAIGN_SEEDS:
     run("run_idc.py", "--data", "mnist_feats", "--seed", str(seed))
+run("run_idc.py", "--data", "mnist_feats", "--seed", "0")   # baseline for
+                                              # metrics.py, same reason as 4b
 
 # --------------------------------------------------------------------------
 # 6. Equivalence proof: the fast metric path == IDC's original code (bit-exact),
@@ -107,7 +132,7 @@ run("metrics.py")
 #    (ARI is logged but never used for selection = leakage protection)
 # --------------------------------------------------------------------------
 for ds in DATASETS:
-    run("tune_idc.py", ds)                    # 6 grid candidates + _best over 5 seeds
+    run("tune_idc.py", ds)                    # 6 grid candidates + _best on all seeds
 
 run("tune_idc.py", "mnist_feats")             # not covered without an argument
 
@@ -115,6 +140,23 @@ run("reselect_best.py")                       # K-constrained selection rule; ac
                                               # every entry in
                                               # results/tuning/selection.json,
                                               # hence after both tune calls
+
+# --------------------------------------------------------------------------
+# 7b. _best with seed 0 for the RQ2 datasets. perturbation_stability.py reads
+#     idc_out_<ds>_best_seed0.npz as its clean baseline, but tune_idc.py and
+#     reselect_best.py train _best for CAMPAIGN_SEEDS only. Same command as
+#     reselect_best.train_best(), config = the rule-2 winner just selected.
+#     (Clean-copy reproduction 2026-08-31: the runs are bit-identical to the
+#     historical files.) In --dry mode before any tuning run, selection.json
+#     may not exist yet -- then the winner is printed as a placeholder.
+# --------------------------------------------------------------------------
+_sel_path = os.path.join(HERE, "results", "tuning", "selection.json")
+_sel = json.load(open(_sel_path)) if os.path.exists(_sel_path) else None
+for ds in ["iris", "breast_cancer", "digits", "har"]:
+    w = (_sel[ds]["winner"] if _sel else
+         {"lgl": "<winner lgl>", "epochs": "<winner epochs>"})
+    run("run_idc.py", "--data", ds, "--seed", "0", "--lgl", str(w["lgl"]),
+        "--epochs", str(w["epochs"]), "--tag", "_best")
 
 # HELD BACK (see the note at the end of this file):
 # run("check_architecture.py")                # is network size the limit on
@@ -148,6 +190,8 @@ run("perturbation_stability.py")              # noise sigma {0, .01, .05, .10}
 #                                             # The SpEx numbers do reproduce; the same
 #                                             # finding is reproducibly covered by the
 #                                             # uniqueness_rownorm rows of the table.
+# Seed 0 by design: compare_kprime.py reads the legacy name, and the copy is
+# a provenance artefact of the first single-seed comparison. X is seed-invariant.
 copy("artifacts/idc_out/idc_out_mnist_seed0.npz",
      "artifacts/idc_out/idc_out_mnist.npz")   # compare_kprime.py reads the legacy name;
                                               # checked field by field: X/y/K/gates/ari
@@ -178,6 +222,29 @@ run("significance.py")                        # t-tests of the ARI comparisons w
                                               # architecture spot check
                                               # -> results/significance.json
 run("visualize_explanations.py")              # -> notes/figures/*.png
+run("check_ranges.py")                        # every reported value against the
+                                              # range its definition allows, plus
+                                              # the cross-metric invariants;
+                                              # exits non-zero on any violation
+# seed_robustness.py always writes results/seed_robustness.json, so the two
+# comparisons below must run in THIS order: the integrity check first (and be
+# copied away), the canonical 5-vs-10 comparison last.
+run("seed_robustness.py",                     # (a) integrity check against the interim
+    "notes/baseline_10seeds_0bis9")           # seeds-0-9 campaign: on the shared seeds
+                                              # 1-9 every value must be identical, i.e.
+                                              # the move to seeds 1-10 changed nothing
+                                              # (SEED_VERGLEICH_5_VS_10.md, section 2)
+copy("results/seed_robustness.json",
+     "results/seed_robustness_integrity_seedshift.json")
+run("seed_robustness.py")                     # (b) CANONICAL: 5-seed vs 10-seed campaign
+                                              # (default baseline notes/baseline_5seeds):
+                                              # which conclusions did the seed count
+                                              # move? This is the file that
+                                              # SEED_VERGLEICH_5_VS_10.md reports
+                                              # (14 series beyond 1 sigma, Iris verdict
+                                              # resolved, Blobs CI wider). Until
+                                              # 2026-08-31 the shipped JSON was the
+                                              # output of (a), overwritten in place.
 
 # --------------------------------------------------------------------------
 # HELD-BACK CHECK SCRIPTS

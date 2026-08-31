@@ -9,7 +9,7 @@ labels). ARI is logged for transparency but NEVER used for selection — a
 clustering method has no access to ground-truth labels. Collapsed solutions
 (<2 used clusters) score -1 and cannot win.
 
-Phase 2 (error bars): the winner is retrained with seeds 1-4 under the tag
+Phase 2 (error bars): the winner is retrained on the remaining seeds under the tag
 `_best` into the canonical artifacts/idc_out/, so evaluate.py and the results
 table pick the runs up like any other dataset variant.
 
@@ -23,7 +23,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from wpaths import TUNING, RESULTS_TUNING, IDC_OUT, MODELS
+from wpaths import TUNING, RESULTS_TUNING, IDC_OUT, MODELS, CAMPAIGN_SEEDS
 
 PY = os.path.join(HERE, "venv", "Scripts", "python.exe")
 
@@ -32,10 +32,12 @@ DATASETS = ["two_moons", "blobs", "iris", "breast_cancer", "digits",
 # LGL in decades below IDC's published default of 1.0 -- the gate penalty is the
 # knob that collapses the 2-D synthetics; 120 epochs = run_idc.py's default
 # budget, 300 = the largest budget affordable for all 7 datasets on one GPU.
-# The grid is searched at SEED 0 ONLY; seeds 1-4 go into error bars for the
-# winner (phase 2), not into the selection.
+# The grid is searched at SEED 0 ONLY; the remaining seeds go into error bars
+# for the winner (phase 2), not into the selection.
 GRID = [(lgl, ep) for lgl in (1.0, 0.1, 0.01) for ep in (120, 300)]
-SEEDS_PHASE2 = [1, 2, 3, 4]
+# All reported seeds are trained; none is copied from the grid. The grid run
+# lives at SELECTION_SEED, which CAMPAIGN_SEEDS deliberately excludes.
+SEEDS_PHASE2 = CAMPAIGN_SEEDS
 
 
 def gtag(lgl, ep):
@@ -99,16 +101,12 @@ def main():
         print(f"WINNER {ds}: LGL={best['lgl']} epochs={best['epochs']} "
               f"(silhouette {best['silhouette']:+.3f})", flush=True)
 
-        # phase 2: winner -> canonical idc_out under tag _best
-        # seed 0 = copy of the grid candidate (identical run, no retrain)
-        src_npz = os.path.join(TUNING, f"idc_out_{ds}{best['tag']}_seed0.npz")
-        src_pt = os.path.join(TUNING, f"idc_model_{ds}{best['tag']}_seed0.pt")
-        dst_npz = os.path.join(IDC_OUT, f"idc_out_{ds}_best_seed0.npz")
-        dst_pt = os.path.join(MODELS, f"idc_model_{ds}_best_seed0.pt")
-        if not os.path.exists(dst_npz):
-            shutil.copy2(src_npz, dst_npz)
-            if os.path.exists(src_pt):
-                shutil.copy2(src_pt, dst_pt)
+        # phase 2: winner -> canonical idc_out under tag _best.
+        # The grid run at SELECTION_SEED is NOT copied in as a reported seed.
+        # It would be bit-identical to a retrain (training is deterministic),
+        # but it is the run that WON the selection, so reporting it would put
+        # an in-sample run inside the error bars. Every reported seed is
+        # trained here instead.
         for s_ in SEEDS_PHASE2:
             _, dt = train(ds, s_, best["lgl"], best["epochs"], "_best")
             print(f"  _best seed {s_}: {dt}", flush=True)

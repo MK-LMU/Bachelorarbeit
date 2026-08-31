@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Central workspace paths — the single place that knows the folder layout.
+"""Central workspace paths and campaign size — the single place that knows the
+folder layout and how many seeds the campaign runs.
 
 Layout (see README.md):
   artifacts/idc_out/   idc_out_<ds>[_tag]_seed<k>.npz  (IDC training outputs)
@@ -31,6 +32,20 @@ DOCS = os.path.join(HERE, "notes", "erklaerungen")
 for _d in (IDC_OUT, MODELS, DATA, TUNING, PERTURB, RESULTS, RESULTS_TUNING,
            RESULTS_PERTURB, LOGS, FIGURES, DOCS):
     os.makedirs(_d, exist_ok=True)
+
+# How many seeds the campaign runs, and which. Every driver and the evaluation
+# import this instead of writing range(...) themselves -- the count used to sit
+# in eight places at once, and a table legend claiming a different number than
+# the runs behind it is not a mistake anyone notices by reading.
+#
+# SELECTION_SEED is where tune_idc.py searches the config grid. It is kept OUT
+# of the reported seeds: the run that wins the selection would otherwise also
+# be one of the runs whose spread the error bars describe, i.e. in-sample
+# against its own selection. Training is deterministic, so that run cannot be
+# "retrained fresh" -- the only fix is not to report it.
+N_SEEDS = 10
+SELECTION_SEED = 0
+CAMPAIGN_SEEDS = list(range(SELECTION_SEED + 1, SELECTION_SEED + 1 + N_SEEDS))
 
 
 def idc_out(fname):

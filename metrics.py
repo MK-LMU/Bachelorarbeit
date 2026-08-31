@@ -1,7 +1,11 @@
 """One metric module applied IDENTICALLY to SpEx and IDC, so that no measured
 difference can originate in the evaluation. Three layers:
 
-  1. IDC's OWN interpretability_metrics.py, imported verbatim.
+  1. IDC's OWN interpretability_metrics.py, imported unchanged. Where an
+     original cannot run as-is, the variant that is actually scored lives in
+     layer 2 with every deviation labelled at its definition (faithfulness_k:
+     the dataset's real K instead of the hardcoded 10, int-cast of the
+     inference output, nan below 2 usable features).
   2. Labelled additions of this thesis, each motivated by a defect of the
      original that is stated where the addition is defined.
   3. A bit-exact fast path for the O(N^2) distance metrics: the neighbour
@@ -37,6 +41,10 @@ from interpretability_metrics import (faithfulness, diversity, uniqueness,
                                        stability, generalizability, get_accuracy)
 
 from scipy.spatial import distance_matrix
+
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from wpaths import SELECTION_SEED
 
 
 # ---------------------------------------------------------------------------
@@ -380,9 +388,12 @@ if __name__ == "__main__":
         "leaf_constant": np.repeat(rng.random((8, 4)), 50, axis=0)})
 
     for ds in only:
-        p = idc_out(f"idc_out_{ds}_seed0.npz")
+        # Deliberately the selection seed. This proves an equality between two
+        # IMPLEMENTATIONS, so any gate matrix serves as a test case -- and the
+        # proof costs hours, so it is not re-run to chase a seed convention.
+        p = idc_out(f"idc_out_{ds}_seed{SELECTION_SEED}.npz")
         if not os.path.exists(p):
-            print(f"{ds:<16} no seed-0 npz, skipped", flush=True)
+            print(f"{ds:<16} no npz for seed {SELECTION_SEED}, skipped", flush=True)
             continue
         d = np.load(p)
         X = np.ascontiguousarray(d["X"], float)
