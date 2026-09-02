@@ -7,13 +7,13 @@
       "dataset": "Blobs",
       "file": "results_multiseed_blobs_best.json",
       "test": "one-sample",
-      "spex_ari": 0.832,
+      "spex_ari": 0.832007,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.3474,
-      "idc_ari_std": 0.0638,
+      "idc_ari_mean": 0.34743,
+      "idc_ari_std": 0.063751,
       "n": 10,
-      "delta": -0.4846,
+      "delta": -0.484577,
       "idc_ari_ci95": [
         0.301825,
         0.393036
@@ -27,13 +27,13 @@
       "dataset": "Digits",
       "file": "results_multiseed_digits_best.json",
       "test": "one-sample",
-      "spex_ari": 0.4176,
+      "spex_ari": 0.417597,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.1395,
-      "idc_ari_std": 0.0228,
+      "idc_ari_mean": 0.139459,
+      "idc_ari_std": 0.022801,
       "n": 10,
-      "delta": -0.2781,
+      "delta": -0.278137,
       "idc_ari_ci95": [
         0.123148,
         0.155771
@@ -47,13 +47,13 @@
       "dataset": "CIFAR-10",
       "file": "results_multiseed_cifar10_best.json",
       "test": "one-sample",
-      "spex_ari": 0.1741,
+      "spex_ari": 0.174126,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.3617,
-      "idc_ari_std": 0.0372,
+      "idc_ari_mean": 0.361715,
+      "idc_ari_std": 0.037218,
       "n": 10,
-      "delta": 0.1876,
+      "delta": 0.187589,
       "idc_ari_ci95": [
         0.335091,
         0.388339
@@ -67,13 +67,13 @@
       "dataset": "MNIST (ResNet feats)",
       "file": "results_multiseed_mnist_feats_best.json",
       "test": "one-sample",
-      "spex_ari": 0.2531,
+      "spex_ari": 0.253131,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.6411,
-      "idc_ari_std": 0.0929,
+      "idc_ari_mean": 0.641078,
+      "idc_ari_std": 0.092861,
       "n": 10,
-      "delta": 0.3879,
+      "delta": 0.387947,
       "idc_ari_ci95": [
         0.57465,
         0.707507
@@ -87,13 +87,13 @@
       "dataset": "MNIST (validated)",
       "file": "results_multiseed_mnist.json",
       "test": "one-sample",
-      "spex_ari": 0.2447,
+      "spex_ari": 0.244731,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.7262,
-      "idc_ari_std": 0.0692,
+      "idc_ari_mean": 0.726215,
+      "idc_ari_std": 0.069154,
       "n": 10,
-      "delta": 0.4815,
+      "delta": 0.481484,
       "idc_ari_ci95": [
         0.676745,
         0.775684
@@ -107,13 +107,13 @@
       "dataset": "Iris",
       "file": "results_multiseed_iris_best.json",
       "test": "one-sample",
-      "spex_ari": 0.7323,
+      "spex_ari": 0.732298,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.221,
-      "idc_ari_std": 0.3173,
+      "idc_ari_mean": 0.220996,
+      "idc_ari_std": 0.317308,
       "n": 10,
-      "delta": -0.5113,
+      "delta": -0.511302,
       "idc_ari_ci95": [
         -0.005993,
         0.447984
@@ -127,13 +127,13 @@
       "dataset": "Breast Cancer",
       "file": "results_multiseed_breast_cancer_best.json",
       "test": "one-sample",
-      "spex_ari": 0.6939,
+      "spex_ari": 0.693918,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.6112,
-      "idc_ari_std": 0.1202,
+      "idc_ari_mean": 0.611214,
+      "idc_ari_std": 0.120158,
       "n": 10,
-      "delta": -0.0827,
+      "delta": -0.082704,
       "idc_ari_ci95": [
         0.525258,
         0.69717
@@ -147,13 +147,13 @@
       "dataset": "Two Moons",
       "file": "results_multiseed_two_moons_best.json",
       "test": "one-sample",
-      "spex_ari": 0.4055,
+      "spex_ari": 0.405499,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.5352,
-      "idc_ari_std": 0.1677,
+      "idc_ari_mean": 0.535154,
+      "idc_ari_std": 0.167699,
       "n": 10,
-      "delta": 0.1297,
+      "delta": 0.129655,
       "idc_ari_ci95": [
         0.41519,
         0.655119
@@ -167,13 +167,13 @@
       "dataset": "HAR",
       "file": "results_multiseed_har_best.json",
       "test": "one-sample",
-      "spex_ari": 0.5078,
+      "spex_ari": 0.507795,
       "spex_ari_std": 0.0,
       "n_spex": 10,
-      "idc_ari_mean": 0.5357,
-      "idc_ari_std": 0.1301,
+      "idc_ari_mean": 0.535713,
+      "idc_ari_std": 0.130134,
       "n": 10,
-      "delta": 0.0279,
+      "delta": 0.027918,
       "idc_ari_ci95": [
         0.442621,
         0.628805
@@ -191,9 +191,9 @@
       "default_from": "results_multiseed_blobs_best.json",
       "n_default": 10,
       "n_arch": 3,
-      "default_mean": 0.3474,
-      "arch_mean": 0.3182,
-      "delta": -0.0293,
+      "default_mean": 0.34743,
+      "arch_mean": 0.318167,
+      "delta": -0.029264,
       "t_welch": 1.388,
       "p": 0.19419012432853663,
       "p_holm": 0.38838024865707327,
@@ -205,9 +205,9 @@
       "default_from": "results_multiseed_blobs_best.json",
       "n_default": 10,
       "n_arch": 3,
-      "default_mean": 0.3474,
+      "default_mean": 0.34743,
       "arch_mean": 0.284,
-      "delta": -0.0634,
+      "delta": -0.06343,
       "t_welch": 2.193,
       "p": 0.06857786613253444,
       "p_holm": 0.20573359839760333,
@@ -219,9 +219,9 @@
       "default_from": "results_multiseed_digits_best.json",
       "n_default": 10,
       "n_arch": 3,
-      "default_mean": 0.1395,
-      "arch_mean": 0.1671,
-      "delta": 0.0276,
+      "default_mean": 0.139459,
+      "arch_mean": 0.167067,
+      "delta": 0.027607,
       "t_welch": -1.532,
       "p": 0.22887325414837087,
       "p_holm": 0.38838024865707327,
@@ -233,15 +233,115 @@
       "default_from": "results_multiseed_digits_best.json",
       "n_default": 10,
       "n_arch": 3,
-      "default_mean": 0.1395,
-      "arch_mean": 0.1042,
-      "delta": -0.0352,
+      "default_mean": 0.139459,
+      "arch_mean": 0.104233,
+      "delta": -0.035226,
       "t_welch": 3.596,
       "p": 0.008246283509699597,
       "p_holm": 0.03298513403879839,
       "significant_holm": true
     }
   ],
+  "family_sensitivity_joint": {
+    "n_tests": 13,
+    "method": "Holm-Bonferroni over the head-to-head and architecture tests pooled into ONE family, as a sensitivity check on the two-family split used for the reported verdicts",
+    "tests": [
+      {
+        "family": "head_to_head",
+        "label": "Blobs",
+        "p": 1.784662983890186e-09,
+        "p_holm_split": 1.4277303871121487e-08,
+        "p_holm_joint": 2.141595580668223e-08
+      },
+      {
+        "family": "head_to_head",
+        "label": "Digits",
+        "p": 2.626938890360621e-11,
+        "p_holm_split": 2.364245001324559e-10,
+        "p_holm_joint": 3.415020557468807e-10
+      },
+      {
+        "family": "head_to_head",
+        "label": "CIFAR-10",
+        "p": 6.650874902244916e-08,
+        "p_holm_split": 3.990524941346949e-07,
+        "p_holm_joint": 6.650874902244916e-07
+      },
+      {
+        "family": "head_to_head",
+        "label": "MNIST (ResNet feats)",
+        "p": 3.381071193217553e-07,
+        "p_holm_split": 1.6905355966087765e-06,
+        "p_holm_joint": 3.0429640738957974e-06
+      },
+      {
+        "family": "head_to_head",
+        "label": "MNIST (validated)",
+        "p": 3.88403781863245e-09,
+        "p_holm_split": 2.718826473042715e-08,
+        "p_holm_joint": 4.272441600495695e-08
+      },
+      {
+        "family": "head_to_head",
+        "label": "Iris",
+        "p": 0.0006489779932590206,
+        "p_holm_split": 0.0025959119730360825,
+        "p_holm_joint": 0.005191823946072165
+      },
+      {
+        "family": "head_to_head",
+        "label": "Breast Cancer",
+        "p": 0.0574940754756232,
+        "p_holm_split": 0.1149881509512464,
+        "p_holm_joint": 0.287470377378116
+      },
+      {
+        "family": "head_to_head",
+        "label": "Two Moons",
+        "p": 0.037065996752907386,
+        "p_holm_split": 0.11119799025872215,
+        "p_holm_joint": 0.2223959805174443
+      },
+      {
+        "family": "head_to_head",
+        "label": "HAR",
+        "p": 0.5145708504389119,
+        "p_holm_split": 0.5145708504389119,
+        "p_holm_joint": 0.5825703729856099
+      },
+      {
+        "family": "architecture_check",
+        "label": "blobs small",
+        "p": 0.19419012432853663,
+        "p_holm_split": 0.38838024865707327,
+        "p_holm_joint": 0.5825703729856099
+      },
+      {
+        "family": "architecture_check",
+        "label": "blobs tiny",
+        "p": 0.06857786613253444,
+        "p_holm_split": 0.20573359839760333,
+        "p_holm_joint": 0.287470377378116
+      },
+      {
+        "family": "architecture_check",
+        "label": "digits small",
+        "p": 0.22887325414837087,
+        "p_holm_split": 0.38838024865707327,
+        "p_holm_joint": 0.5825703729856099
+      },
+      {
+        "family": "architecture_check",
+        "label": "digits tiny",
+        "p": 0.008246283509699597,
+        "p_holm_split": 0.03298513403879839,
+        "p_holm_joint": 0.05772398456789718
+      }
+    ],
+    "verdicts_changed": [
+      "digits tiny"
+    ]
+  },
   "n_resolved_raw": 7,
   "n_resolved_holm": 6
 }

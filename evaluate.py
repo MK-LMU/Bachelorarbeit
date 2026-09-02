@@ -80,15 +80,22 @@ def clustering_block(labels, y, K):
 
 
 def agg(per_seed):
-    """list of dicts -> {metric: {mean, std, n, values}} (nan-aware)."""
+    """list of dicts -> {metric: {mean, std, n, values}} (nan-aware).
+
+    mean/std are derived from the STORED `values`, not from the raw floats, so
+    every consumer can re-derive them, and they keep 6 decimals so that no
+    downstream formatter re-rounds an already-rounded number. Four decimals
+    were enough for the JSON but not for the tables: a stored 0.4055 formats
+    to 0.406 while the seeds average to 0.405499. Six decimals also drop float
+    noise -- a std of 1e-16 over ten identical seeds becomes an honest 0.0."""
     out = {}
     for m in per_seed[0]:
-        v = np.array([d[m] for d in per_seed], float)
-        ok = v[np.isfinite(v)]
-        out[m] = {"mean": round(float(ok.mean()), 4) if len(ok) else None,
-                  "std": round(float(ok.std(ddof=1)), 4) if len(ok) > 1 else None,
-                  "n": int(len(ok)), "values": [None if not np.isfinite(x) else
-                                                round(float(x), 6) for x in v]}
+        vals = [None if not np.isfinite(x) else round(float(x), 6)
+                for x in np.array([d[m] for d in per_seed], float)]
+        ok = np.array([x for x in vals if x is not None], float)
+        out[m] = {"mean": round(float(ok.mean()), 6) if len(ok) else None,
+                  "std": round(float(ok.std(ddof=1)), 6) if len(ok) > 1 else None,
+                  "n": int(len(ok)), "values": vals}
     return out
 
 

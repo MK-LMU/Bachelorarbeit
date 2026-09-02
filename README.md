@@ -43,9 +43,21 @@ is the configuration-search seed and is not reported), all metrics,
 don't edit it by hand. `results/` also holds the standalone checks: significance tests,
 the metric equivalence proof, the tuning protocols and the RQ2 stability study.
 
+IDC's configuration here is **not** IDC's own default. Optimiser, learning rates,
+scheduler and batch size are the values of the authors' released `cfg_run.yaml`, but the
+network is about a quarter of its width (gate net 256 instead of 1024, bottleneck 64
+instead of 128), the masking rate of the denoising task is 0.5 instead of 0.9, and the
+epoch schedule follows `run_idc.py`'s own rule. MNIST pixels is the one dataset that runs
+IDC's `cfg_mnist.yaml` unmodified, which is why it doubles as external validation; the
+architecture check (`--arch small|tiny`) varies the width downward from ours only.
+IDC's ACC/ARI/NMI in the tables are recomputed from the FINAL labels, not read from the
+best-epoch values IDC logs (`acc`/`ari`/`nmi` in each npz), which are selected under
+label access.
+
 Correctness of the bridge is argued in `test_correctness.py` (five independent angles on
-constructed trees) and `test_correctness_evaluated.py` (the same checks on the nine trees
-the thesis actually reports).
+constructed trees) and `test_correctness_evaluated.py` (equivalence, additivity and brute
+force, plus node-weight and production-wiring checks, on the nine trees the thesis
+actually reports; the KernelExplainer and round-trip angles are not repeated there).
 
 ### What is not in here
 
@@ -107,9 +119,22 @@ aus `results/*.json` erzeugt und nicht von Hand bearbeitet. In `results/` liegen
 die freistehenden Prüfungen: Signifikanztests, der Metrik-Äquivalenzbeweis, die
 Tuning-Protokolle und die RQ2-Stabilitätsstudie.
 
+IDCs Konfiguration hier ist **nicht** IDCs eigener Default. Optimierer, Lernraten,
+Scheduler und Batchgröße sind die Werte aus `cfg_run.yaml` der Autoren, das Netz ist
+aber rund ein Viertel so breit (Gate-Netz 256 statt 1024, Bottleneck 64 statt 128), die
+Maskierungsrate der Denoising-Aufgabe liegt bei 0.5 statt 0.9, und der Epochen-Schedule
+folgt einer eigenen Regel in `run_idc.py`. MNIST-Pixel ist der einzige Datensatz, der
+IDCs `cfg_mnist.yaml` unverändert fährt — deshalb dient er als externe Validierung; der
+Architektur-Check (`--arch small|tiny`) variiert die Breite nur nach unten.
+IDCs ACC/ARI/NMI in den Tabellen werden aus den FINALEN Labels neu berechnet, nicht aus
+den Best-Epoch-Werten, die IDC protokolliert (`acc`/`ari`/`nmi` im npz) und die unter
+Label-Einsicht gewählt sind.
+
 Die Korrektheit der Brücke belegen `test_correctness.py` (fünf unabhängige Winkel auf
-konstruierten Bäumen) und `test_correctness_evaluated.py` (dieselben Prüfungen auf den
-neun Bäumen, aus denen die Arbeit tatsächlich berichtet).
+konstruierten Bäumen) und `test_correctness_evaluated.py` (Äquivalenz, Additivität und
+Brute Force plus Knotengewichts- und Produktions-Verdrahtungs-Check auf den neun Bäumen,
+aus denen die Arbeit tatsächlich berichtet; KernelExplainer und Format-Roundtrip werden
+dort nicht wiederholt).
 
 ### Was hier nicht liegt
 

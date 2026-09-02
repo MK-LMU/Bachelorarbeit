@@ -95,7 +95,7 @@ def nn_identical_frac(X, gates):
     from sklearn.neighbors import NearestNeighbors
     nn = NearestNeighbors(n_neighbors=2).fit(X)
     _, ind = nn.kneighbors(X)
-    neigh = ind[:, 1]
+    neigh = _other_neighbour(ind)
     return float(np.mean(np.all(np.isclose(gates, gates[neigh], atol=1e-12), axis=1)))
 
 
@@ -289,10 +289,27 @@ def stability_pre(gates, nn_dist_mat, nn_ind_mat, k=2):
     return float(np.mean(np.array(lipchitz_constants)))
 
 
+def _other_neighbour(ind):
+    """Column 0 or 1 of a neighbour index matrix, whichever is not the sample
+    itself.
+
+    Sample i is normally its own nearest neighbour at distance 0, so column 1 is
+    the neighbour. That breaks on duplicate rows: Iris has one, and for the two
+    tied samples both distances are 0, so the sort can put the twin in column 0
+    and the sample itself in column 1. Taking column 1 blindly then compares
+    gates[i] with gates[i] and scores a guaranteed hit -- +1/150 on every Iris
+    value, for both methods. Eq. (nnid) says "the nearest neighbour of x_n", and
+    that is what this returns. Some j != i always sits in the first two columns,
+    because i occupies at most one of them."""
+    idx = np.arange(ind.shape[0])
+    return np.where(ind[:, 0] != idx, ind[:, 0], ind[:, 1])
+
+
 def nn_identical_frac_pre(gates, nn_ind_mat):
-    """Scale-invariant granularity (share of 1-NN pairs with identical gate
-    rows), using the same tie-breaking as the metrics above."""
-    neigh = nn_ind_mat[:, 1]
+    """Scale-invariant granularity (share of samples whose nearest OTHER sample
+    has an identical gate row), using the same tie-breaking as the metrics
+    above."""
+    neigh = _other_neighbour(nn_ind_mat)
     return float(np.mean(np.all(np.isclose(gates, gates[neigh], atol=1e-12), axis=1)))
 
 

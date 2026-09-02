@@ -55,9 +55,18 @@ Notes:
   because every gate row of that run already peaks at 1 and the
   normalisation therefore changes nothing. Where the two differ, the
   gap is the share of the raw number that was gate MAGNITUDE rather
-  than granularity — on the SpEx side a factor of 1.7 to 2.9.
+  than granularity — on the SpEx side a factor of 1.7 to 2.9, except
+  on the single-feature trees (Two Moons, Breast Cancer, Iris), where
+  row normalisation turns every row into the same indicator vector and
+  the row-normalised value is exactly 0.
 - IDC config is paper-validated **only for MNIST**; all other IDC columns
   use a default config and are lower bounds under un-tuned settings.
+- IDC's ACC/ARI/NMI are recomputed here from the FINAL model's labels
+  via Munkres. They are NOT the best-epoch values IDC logs during
+  training and stores in the npz as `acc`/`ari`/`nmi`: those are picked
+  while looking at the true labels, and a tree has no epochs to pick
+  from, so using them would compare two protocols. The gap is
+  systematic and one-directional (the npz value is never lower). The largest gap in this campaign is Iris, +0.155 ARI.
 - `±` is the standard deviation over the retraining seeds — the spread
   across runs, not a measurement uncertainty of a single run. `n/a`
   cells name the reason a value does not exist; they are not zeros.
@@ -109,15 +118,15 @@ Every variant keeps its full detail block below.
 
 | dataset | k-means ARI (baseline) | ARI SpEx | ARI IDC | nn-ident SpEx | nn-ident IDC | faith. top-1 drop SpEx | faith. top-1 drop IDC | IDC config |
 |---|---|---|---|---|---|---|---|---|
-| Two Moons | 0.479 | 0.406 ±0.000 | 0.535 ±0.168 | 0.998 ±0.000 | 1.000 ±0.000 | 0.319 ±0.000 | 0.347 ±0.084 | tuned (grid, silhouette-selected) |
+| Two Moons | 0.479 | 0.405 ±0.000 | 0.535 ±0.168 | 0.998 ±0.000 | 1.000 ±0.000 | 0.319 ±0.000 | 0.347 ±0.084 | tuned (grid, silhouette-selected) |
 | Gaussian Blobs | 0.871 | 0.832 ±0.000 | 0.347 ±0.064 | 0.990 ±0.000 | 1.000 ±0.000 | 0.536 ±0.000 | 0.105 ±0.109 | tuned (grid, silhouette-selected) |
 | Iris | 0.716 | 0.732 ±0.000 | 0.221 ±0.317 | 0.960 ±0.000 | 0.637 ±0.476 | 0.560 ±0.000 | 0.407 ±0.150 ⁿ⁼4 | tuned (grid, silhouette-selected) |
 | Breast Cancer | 0.730 | 0.694 ±0.000 | 0.611 ±0.120 | 0.944 ±0.000 | 0.000 ±0.000 | 0.290 ±0.000 | -0.001 ±0.009 | tuned (grid, silhouette-selected) |
-| Digits | 0.672 | 0.418 ±0.000 | 0.140 ±0.023 | 0.820 ±0.000 | 0.000 ±0.000 | 0.422 ±0.000 | 0.002 ±0.003 | tuned (grid, silhouette-selected) |
-| HAR | 0.461 | 0.508 ±0.000 | 0.536 ±0.130 | 0.999 ±0.000 | 0.000 ±0.000 | 0.352 ±0.000 | 1.0e-04 ±0.001 | tuned (grid, silhouette-selected) |
-| CIFAR-10 (ResNet feats) | 0.461 | 0.174 ±0.000 | 0.362 ±0.037 | 0.593 ±0.000 | 0.000 ±0.000 | 0.080 ±0.000 | 4.0e-04 ±0.001 | tuned (grid, silhouette-selected) |
-| MNIST | 0.342 | 0.245 ±0.000 | 0.726 ±0.069 | 0.753 ±0.000 | 1.0e-04 ±1.0e-04 | 0.179 ±0.000 | 0.004 ±0.002 | **validated** |
-| MNIST (ResNet feats) | 0.446 | 0.253 ±0.000 | 0.641 ±0.093 | 0.669 ±0.000 | 0.000 ±0.000 | 0.327 ±0.000 | -0.000 ±0.001 | tuned (grid, silhouette-selected) |
+| Digits | 0.672 | 0.418 ±0.000 | 0.139 ±0.023 | 0.820 ±0.000 | 0.000 ±0.000 | 0.422 ±0.000 | 0.002 ±0.003 | tuned (grid, silhouette-selected) |
+| HAR | 0.461 | 0.508 ±0.000 | 0.536 ±0.130 | 0.999 ±0.000 | 0.000 ±0.000 | 0.352 ±0.000 | 1.1e-04 ±0.001 | tuned (grid, silhouette-selected) |
+| CIFAR-10 (ResNet feats) | 0.461 | 0.174 ±0.000 | 0.362 ±0.037 | 0.593 ±0.000 | 0.000 ±0.000 | 0.080 ±0.000 | 3.6e-04 ±0.001 | tuned (grid, silhouette-selected) |
+| MNIST | 0.342 | 0.245 ±0.000 | 0.726 ±0.069 | 0.753 ±0.000 | 8.0e-05 ±9.2e-05 | 0.179 ±0.000 | 0.004 ±0.002 | **validated** |
+| MNIST (ResNet feats) | 0.446 | 0.253 ±0.000 | 0.641 ±0.093 | 0.669 ±0.000 | 0.000 ±0.000 | 0.327 ±0.000 | -1.0e-05 ±0.001 | tuned (grid, silhouette-selected) |
 
 ## Two Moons  (N=2000, D=2, K=2, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: default, k-means baseline ARI 0.479)
 
@@ -127,7 +136,7 @@ Every variant keeps its full detail block below.
 |---|---|---|
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.819 ±0.000 | 0.500 ±0.000 |
-| ARI  [-.5,1] | 0.406 ±0.000 | 0.000 ±0.000 |
+| ARI  [-.5,1] | 0.405 ±0.000 | 0.000 ±0.000 |
 | NMI  [0,1] | 0.390 ±0.000 | 0.000 ±0.000 |
 | **Decomposition: reference quality vs. tree approximation** | | |
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
@@ -157,7 +166,7 @@ Every variant keeps its full detail block below.
 |---|---|---|
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.819 ±0.000 | 0.859 ±0.057 |
-| ARI  [-.5,1] | 0.406 ±0.000 | 0.526 ±0.173 |
+| ARI  [-.5,1] | 0.405 ±0.000 | 0.526 ±0.173 |
 | NMI  [0,1] | 0.390 ±0.000 | 0.446 ±0.182 |
 | **Decomposition: reference quality vs. tree approximation** | | |
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
@@ -187,8 +196,8 @@ Every variant keeps its full detail block below.
 |---|---|---|
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.819 ±0.000 | 0.862 ±0.059 |
-| ARI  [-.5,1] | 0.406 ±0.000 | 0.535 ±0.168 |
-| NMI  [0,1] | 0.390 ±0.000 | 0.455 ±0.167 |
+| ARI  [-.5,1] | 0.405 ±0.000 | 0.535 ±0.168 |
+| NMI  [0,1] | 0.390 ±0.000 | 0.454 ±0.167 |
 | **Decomposition: reference quality vs. tree approximation** | | |
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.636 ±0.000 | — |
@@ -220,8 +229,8 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.832 ±0.000 | 0.000 ±0.000 |
 | NMI  [0,1] | 0.822 ±0.000 | 0.000 ±0.000 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.916 ±4.0e-04 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.990 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (all gates zero -- no explanation to measure) |
@@ -250,8 +259,8 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.832 ±0.000 | 0.341 ±0.021 |
 | NMI  [0,1] | 0.822 ±0.000 | 0.500 ±0.036 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.916 ±4.0e-04 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -280,8 +289,8 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.832 ±0.000 | 0.347 ±0.064 |
 | NMI  [0,1] | 0.822 ±0.000 | 0.502 ±0.057 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.916 ±4.0e-04 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -388,7 +397,7 @@ Every variant keeps its full detail block below.
 | diversity_fixed (weighted Jaccard)  [0,100] | 0.000 ±0.000 | 2.312 ±4.752 |
 | **Generalizability** | | |
 | generalizability  [0,1] | 0.912 ±0.013 | 0.895 ±0.046 |
-| no gating, X unchanged (reference)  [0,1] | 0.970 ±0.009 | 0.970 ±0.009 |
+| no gating, X unchanged (reference)  [0,1] | 0.970 ±0.008 | 0.970 ±0.008 |
 
 ## Breast Cancer — IDC best (grid/silhouette)  (N=569, D=30, K=2, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (grid, silhouette-selected), k-means baseline ARI 0.730)
 
@@ -404,7 +413,7 @@ Every variant keeps its full detail block below.
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.944 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.060 ±0.000 | 0.151 ±0.015 |
-| uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | 0.148 ±0.015 |
+| uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | 0.148 ±0.014 |
 | stability (k=5)  [0,inf) | 0.138 ±0.000 | 0.252 ±0.027 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
@@ -416,7 +425,7 @@ Every variant keeps its full detail block below.
 | diversity_fixed (weighted Jaccard)  [0,100] | 0.000 ±0.000 | 10.050 ±1.856 |
 | **Generalizability** | | |
 | generalizability  [0,1] | 0.912 ±0.013 | 0.960 ±0.012 |
-| no gating, X unchanged (reference)  [0,1] | 0.970 ±0.009 | 0.970 ±0.009 |
+| no gating, X unchanged (reference)  [0,1] | 0.970 ±0.008 | 0.970 ±0.008 |
 
 ## Digits  (N=1797, D=64, K=10, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: default, k-means baseline ARI 0.672)
 
@@ -452,7 +461,7 @@ Every variant keeps its full detail block below.
 |---|---|---|
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.620 ±0.000 | 0.216 ±0.019 |
-| ARI  [-.5,1] | 0.418 ±0.000 | 0.140 ±0.023 |
+| ARI  [-.5,1] | 0.418 ±0.000 | 0.139 ±0.023 |
 | NMI  [0,1] | 0.565 ±0.000 | 0.296 ±0.049 |
 | **Decomposition: reference quality vs. tree approximation** | | |
 | ARI(spectral ref, y)  [-.5,1] | 0.815 ±0.000 | — |
@@ -481,18 +490,18 @@ Every variant keeps its full detail block below.
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.541 ±0.000 | 0.355 ±0.001 |
 | ARI  [-.5,1] | 0.508 ±0.000 | 0.331 ±0.001 |
-| NMI  [0,1] | 0.723 ±0.000 | 0.550 ±0.004 |
+| NMI  [0,1] | 0.723 ±0.000 | 0.550 ±0.003 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.992 ±0.004 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.2e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.992 ±0.003 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.999 ±0.000 | 0.073 ±0.024 |
-| uniqueness (raw)  [0,inf) | 3.0e-04 ±0.000 | 0.400 ±0.042 |
-| uniqueness (row-norm)  [0,inf) | 4.0e-04 ±0.000 | 0.436 ±0.045 |
+| uniqueness (raw)  [0,inf) | 2.5e-04 ±0.000 | 0.400 ±0.042 |
+| uniqueness (row-norm)  [0,inf) | 4.2e-04 ±0.000 | 0.436 ±0.045 |
 | stability (k=5)  [0,inf) | 0.001 ±0.000 | 0.608 ±0.049 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
-| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 0.022 ±0.010 |
+| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 0.023 ±0.010 |
 | faithfulness AOPC  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 0.141 ±0.009 |
 | faithfulness (correlation)  [-1,1] | undef.* | 0.851 ±0.106 |
 | **Diversity across classes** | | |
@@ -511,16 +520,16 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.508 ±0.000 | 0.536 ±0.130 |
 | NMI  [0,1] | 0.723 ±0.000 | 0.655 ±0.109 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.992 ±0.004 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.2e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.992 ±0.003 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.999 ±0.000 | 0.000 ±0.000 |
-| uniqueness (raw)  [0,inf) | 3.0e-04 ±0.000 | 2.519 ±0.064 |
-| uniqueness (row-norm)  [0,inf) | 4.0e-04 ±0.000 | 2.519 ±0.064 (= raw) |
+| uniqueness (raw)  [0,inf) | 2.5e-04 ±0.000 | 2.519 ±0.064 |
+| uniqueness (row-norm)  [0,inf) | 4.2e-04 ±0.000 | 2.519 ±0.064 (= raw) |
 | stability (k=5)  [0,inf) | 0.001 ±0.000 | 2.823 ±0.065 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
-| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 1.0e-04 ±0.001 |
+| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 1.1e-04 ±0.001 |
 | faithfulness AOPC  [-(1-1/K),1-1/K] | 0.352 ±0.000 | 0.176 ±0.046 |
 | faithfulness (correlation)  [-1,1] | undef.* | 0.832 ±0.077 |
 | **Diversity across classes** | | |
@@ -538,11 +547,11 @@ Every variant keeps its full detail block below.
 |---|---|---|
 | **Clustering quality** | | |
 | ACC  [1/K,1] | 0.406 ±0.000 | 0.279 ±0.014 |
-| ARI  [-.5,1] | 0.174 ±0.000 | 0.200 ±0.016 |
+| ARI  [-.5,1] | 0.174 ±0.000 | 0.199 ±0.016 |
 | NMI  [0,1] | 0.339 ±0.000 | 0.348 ±0.013 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.282 ±1.0e-04 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.3e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.282 ±9.5e-05 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.593 ±0.000 | 0.003 ±0.001 |
 | uniqueness (raw)  [0,inf) | 0.072 ±0.000 | 0.654 ±0.012 |
@@ -550,9 +559,9 @@ Every variant keeps its full detail block below.
 | stability (k=5)  [0,inf) | 0.142 ±0.000 | 0.792 ±0.011 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
-| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.080 ±0.000 | 0.002 ±0.003 |
+| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.080 ±0.000 | 0.001 ±0.003 |
 | faithfulness AOPC  [-(1-1/K),1-1/K] | 0.197 ±0.000 | 0.118 ±0.015 |
-| faithfulness (correlation)  [-1,1] | 0.871 ±0.000 | 0.900 ±0.016 |
+| faithfulness (correlation)  [-1,1] | 0.870 ±0.000 | 0.900 ±0.016 |
 | **Diversity across classes** | | |
 | diversity (original, defective)  [-100/(K-1),100] | 45.365 ±0.000 | n/a (defective metric: 100.000 ±0.000 lies above the ceiling 88.9 -> empty median sets; see diversity_fixed) |
 | diversity_fixed (weighted Jaccard)  [0,100] | 51.043 ±0.000 | 89.379 ±0.323 |
@@ -569,8 +578,8 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.174 ±0.000 | 0.362 ±0.037 |
 | NMI  [0,1] | 0.339 ±0.000 | 0.484 ±0.029 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.282 ±1.0e-04 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.3e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.282 ±9.5e-05 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.593 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.072 ±0.000 | 2.430 ±0.011 |
@@ -578,9 +587,9 @@ Every variant keeps its full detail block below.
 | stability (k=5)  [0,inf) | 0.142 ±0.000 | 2.571 ±0.010 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
-| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.080 ±0.000 | 4.0e-04 ±0.001 |
+| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.080 ±0.000 | 3.6e-04 ±0.001 |
 | faithfulness AOPC  [-(1-1/K),1-1/K] | 0.197 ±0.000 | 0.156 ±0.037 |
-| faithfulness (correlation)  [-1,1] | 0.871 ±0.000 | 0.942 ±0.012 |
+| faithfulness (correlation)  [-1,1] | 0.870 ±0.000 | 0.942 ±0.012 |
 | **Diversity across classes** | | |
 | diversity (original, defective)  [-100/(K-1),100] | 45.365 ±0.000 | n/a (defective metric: 97.000 ±1.054 lies above the ceiling 88.9 -> empty median sets; see diversity_fixed) |
 | diversity_fixed (weighted Jaccard)  [0,100] | 51.043 ±0.000 | 59.673 ±0.251 |
@@ -595,14 +604,14 @@ Every variant keeps its full detail block below.
 | metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
 |---|---|---|
 | **Clustering quality** | | |
-| ACC  [1/K,1] | 0.457 ±0.000 | 0.807 ±0.072 |
+| ACC  [1/K,1] | 0.457 ±0.000 | 0.807 ±0.073 |
 | ARI  [-.5,1] | 0.245 ±0.000 | 0.726 ±0.069 |
 | NMI  [0,1] | 0.345 ±0.000 | 0.766 ±0.042 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.570 ±2.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.382 ±0.000 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.570 ±1.7e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.382 ±4.8e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.753 ±0.000 | 1.0e-04 ±1.0e-04 |
+| nn-identical frac  [0,1] | 0.753 ±0.000 | 8.0e-05 ±9.2e-05 |
 | uniqueness (raw)  [0,inf) | 0.024 ±0.000 | 0.792 ±0.003 |
 | uniqueness (row-norm)  [0,inf) | 0.068 ±0.000 | 0.792 ±0.003 (= raw) |
 | stability (k=5)  [0,inf) | 0.050 ±0.000 | 0.863 ±0.003 |
@@ -616,7 +625,7 @@ Every variant keeps its full detail block below.
 | diversity_fixed (weighted Jaccard)  [0,100] | 46.033 ±0.000 | 75.582 ±0.185 |
 | **Generalizability** | | |
 | generalizability  [0,1] | 0.417 ±0.005 | 0.894 ±0.004 |
-| no gating, X unchanged (reference)  [0,1] | 0.885 ±0.005 | 0.885 ±0.005 |
+| no gating, X unchanged (reference)  [0,1] | 0.886 ±0.006 | 0.886 ±0.006 |
 
 ## MNIST (ResNet feats)  (N=10000, D=512, K=10, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: default, k-means baseline ARI 0.446)
 
@@ -629,11 +638,11 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.253 ±0.000 | 0.304 ±0.033 |
 | NMI  [0,1] | 0.407 ±0.000 | 0.486 ±0.028 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.715 ±3.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.353 ±0.000 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.715 ±2.6e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.353 ±3.7e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.669 ±0.000 | 2.0e-04 ±2.0e-04 |
-| uniqueness (raw)  [0,inf) | 0.092 ±0.000 | 0.702 ±0.011 |
+| nn-identical frac  [0,1] | 0.669 ±0.000 | 2.1e-04 ±2.5e-04 |
+| uniqueness (raw)  [0,inf) | 0.092 ±0.000 | 0.702 ±0.012 |
 | uniqueness (row-norm)  [0,inf) | 0.196 ±0.000 | 0.720 ±0.010 |
 | stability (k=5)  [0,inf) | 0.169 ±0.000 | 0.865 ±0.010 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
@@ -645,7 +654,7 @@ Every variant keeps its full detail block below.
 | diversity (original, defective)  [-100/(K-1),100] | 37.921 ±0.000 | n/a (defective metric: 100.000 ±0.000 lies above the ceiling 88.9 -> empty median sets; see diversity_fixed) |
 | diversity_fixed (weighted Jaccard)  [0,100] | 57.579 ±0.000 | 92.612 ±0.198 |
 | **Generalizability** | | |
-| generalizability  [0,1] | 0.522 ±0.006 | 0.852 ±0.007 |
+| generalizability  [0,1] | 0.522 ±0.007 | 0.852 ±0.007 |
 | no gating, X unchanged (reference)  [0,1] | 0.972 ±0.003 | 0.972 ±0.003 |
 
 ## MNIST (ResNet feats) — IDC best (grid/silhouette)  (N=10000, D=512, K=10, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (grid, silhouette-selected), k-means baseline ARI 0.446)
@@ -657,23 +666,23 @@ Every variant keeps its full detail block below.
 | ARI  [-.5,1] | 0.253 ±0.000 | 0.641 ±0.093 |
 | NMI  [0,1] | 0.407 ±0.000 | 0.741 ±0.050 |
 | **Decomposition: reference quality vs. tree approximation** | | |
-| ARI(spectral ref, y)  [-.5,1] | 0.715 ±3.0e-04 | — |
-| ARI(tree, ref)  [-.5,1] | 0.353 ±0.000 | — |
+| ARI(spectral ref, y)  [-.5,1] | 0.715 ±2.6e-04 | — |
+| ARI(tree, ref)  [-.5,1] | 0.353 ±3.7e-05 | — |
 | **Explanation granularity** | | |
 | nn-identical frac  [0,1] | 0.669 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.092 ±0.000 | 2.897 ±0.050 |
 | uniqueness (row-norm)  [0,inf) | 0.196 ±0.000 | 2.897 ±0.050 (= raw) |
-| stability (k=5)  [0,inf) | 0.169 ±0.000 | 3.090 ±0.052 |
+| stability (k=5)  [0,inf) | 0.169 ±0.000 | 3.089 ±0.052 |
 | gate failure rate (all-zero · single-row) | zero 0/10 · constant 0/10 | zero 0/10 · constant 0/10 |
 | **Faithfulness** | | |
-| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.327 ±0.000 | -0.000 ±0.001 |
+| faithfulness top-1 drop  [-(1-1/K),1-1/K] | 0.327 ±0.000 | -1.0e-05 ±0.001 |
 | faithfulness AOPC  [-(1-1/K),1-1/K] | 0.331 ±0.000 | 0.204 ±0.045 |
 | faithfulness (correlation)  [-1,1] | 0.455 ±0.000 | 0.950 ±0.027 |
 | **Diversity across classes** | | |
 | diversity (original, defective)  [-100/(K-1),100] | 37.921 ±0.000 | 12.153 ±1.487 |
 | diversity_fixed (weighted Jaccard)  [0,100] | 57.579 ±0.000 | 27.912 ±0.458 |
 | **Generalizability** | | |
-| generalizability  [0,1] | 0.522 ±0.006 | 0.958 ±0.004 |
+| generalizability  [0,1] | 0.522 ±0.007 | 0.958 ±0.004 |
 | no gating, X unchanged (reference)  [0,1] | 0.972 ±0.003 | 0.972 ±0.003 |
 
 \* faithfulness (correlation) needs ≥2 used features, a non-constant masking curve AND a non-constant importance vector. Where any of those fails the metric is undefined — a property of the metric, not missing data. The affected variants are listed below, read off the results rather than recited, because this note has gone stale before:

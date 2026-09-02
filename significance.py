@@ -67,13 +67,16 @@ def head_to_head():
         ci = stats.t.interval(0.95, len(idc) - 1, loc=idc.mean(), scale=stats.sem(idc))
         rows.append({"dataset": label, "file": f"results_multiseed_{suffix}.json",
                      "test": test,
-                     "spex_ari": round(float(spex.mean()), 4),
-                     "spex_ari_std": round(float(spex.std(ddof=1)), 4) if len(spex) > 1 else 0.0,
+                     # 6 decimals, not 4: a mean of 0.4055 stored at 4 dp
+                     # formats to 0.406 in a 3-dp table while the seeds average
+                     # to 0.405499. Same reason as evaluate.agg.
+                     "spex_ari": round(float(spex.mean()), 6),
+                     "spex_ari_std": round(float(spex.std(ddof=1)), 6) if len(spex) > 1 else 0.0,
                      "n_spex": int(len(spex)),
-                     "idc_ari_mean": round(float(idc.mean()), 4),
-                     "idc_ari_std": round(float(idc.std(ddof=1)), 4),
+                     "idc_ari_mean": round(float(idc.mean()), 6),
+                     "idc_ari_std": round(float(idc.std(ddof=1)), 6),
                      "n": int(len(idc)),
-                     "delta": round(float(idc.mean() - spex.mean()), 4),
+                     "delta": round(float(idc.mean() - spex.mean()), 6),
                      # Interval of IDC's MEAN, not of the difference: it is
                      # centred on idc.mean() and neither brackets `delta` nor
                      # need share its sign. Named accordingly so it cannot be
@@ -122,15 +125,43 @@ def architecture_check():
             t, p = stats.ttest_ind(base, v, equal_var=False)       # Welch
             rows.append({"dataset": ds, "arch": arch, "default_from": base_src,
                          "n_default": len(base), "n_arch": len(v),
-                         "default_mean": round(float(np.mean(base)), 4),
-                         "arch_mean": round(float(np.mean(v)), 4),
-                         "delta": round(float(np.mean(v) - np.mean(base)), 4),
+                         "default_mean": round(float(np.mean(base)), 6),
+                         "arch_mean": round(float(np.mean(v)), 6),
+                         "delta": round(float(np.mean(v) - np.mean(base)), 6),
                          "t_welch": round(float(t), 3), "p": float(p)})
     adj = holm([x["p"] for x in rows])
     for x, pa in zip(rows, adj):
         x["p_holm"] = float(pa)
         x["significant_holm"] = bool(pa < ALPHA)
     return rows
+
+
+def joint_family(h2h, arch):
+    """Sensitivity of the Holm verdicts to the family definition.
+
+    Holm controls the FWER within the family it is applied to, and this file
+    applies it twice -- 9 head-to-head tests, 4 architecture tests -- because
+    the two answer different questions. That split is a choice, not a fact, so
+    the alternative is computed as well: one family of all 13 tests. Whichever
+    verdicts differ between the two are the ones that hang on the choice and
+    have to be reported as exploratory rather than confirmed."""
+    if not arch:
+        return None
+    tests = ([{"family": "head_to_head", "label": x["dataset"], "p": x["p"],
+               "p_holm_split": x["p_holm"]} for x in h2h]
+             + [{"family": "architecture_check",
+                 "label": f"{x['dataset']} {x['arch']}", "p": x["p"],
+                 "p_holm_split": x["p_holm"]} for x in arch])
+    changed = []
+    for t, pa in zip(tests, holm([t["p"] for t in tests])):
+        t["p_holm_joint"] = float(pa)
+        if (t["p_holm_split"] < ALPHA) != (pa < ALPHA):
+            changed.append(t["label"])
+    return {"n_tests": len(tests),
+            "method": "Holm-Bonferroni over the head-to-head and architecture "
+                      "tests pooled into ONE family, as a sensitivity check on "
+                      "the two-family split used for the reported verdicts",
+            "tests": tests, "verdicts_changed": changed}
 
 
 def fmt_p(p):
@@ -140,6 +171,7 @@ def fmt_p(p):
 def main():
     h2h = head_to_head()
     arch = architecture_check()
+    joint = joint_family(h2h, arch)
     out = {"alpha": ALPHA,
            "method_head_to_head": "two-sided t-test of IDC's per-seed ARI against "
                                   "SpEx's; one-sample against the constant where "
@@ -151,6 +183,7 @@ def main():
                                   "(per-test n in n_default/n_arch); "
                                   "Holm-Bonferroni over the 4 tests",
            "head_to_head": h2h, "architecture_check": arch,
+           "family_sensitivity_joint": joint,
            "n_resolved_raw": int(sum(x["p"] < ALPHA for x in h2h)),
            "n_resolved_holm": int(sum(x["p_holm"] < ALPHA for x in h2h))}
     jp = results("significance.json")
@@ -174,6 +207,16 @@ def main():
             print(f"{x['dataset'] + ' ' + x['arch']:<30}{x['default_mean']:>9.3f}"
                   f"{x['arch_mean']:>9.3f}{x['delta']:>+8.3f}{fmt_p(x['p']):>8}"
                   f"{fmt_p(x['p_holm']):>8}{'  *' if x['significant_holm'] else ''}")
+    if joint:
+        print(f"\nfamily sensitivity: Holm over all {joint['n_tests']} tests "
+              f"as ONE family")
+        for t in joint["tests"]:
+            if t["p_holm_split"] < ALPHA or t["p_holm_joint"] < ALPHA:
+                print(f"  {t['label']:<28}p={fmt_p(t['p'])}"
+                      f"  split={fmt_p(t['p_holm_split'])}"
+                      f"  joint={fmt_p(t['p_holm_joint'])}")
+        print("  verdicts that change: "
+              + (", ".join(joint["verdicts_changed"]) or "none"))
     print(f"\nsaved {os.path.relpath(jp, HERE)}")
 
 

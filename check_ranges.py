@@ -131,12 +131,13 @@ def check_file(path):
                 bad.append(f"{ds}/{method}/{metric}: n={n} but {n_def} values "
                            f"are defined")
 
-            # --- mean/std must be reproducible from values (4-decimal rounding)
+            # --- mean/std must be reproducible from values (6-decimal rounding;
+            #     evaluate.agg derives both from exactly this list)
             ok = [v for v in vals if not _undef(v)]
             m = entry.get("mean")
             if m is not None and ok:
                 want = sum(ok) / len(ok)
-                if abs(m - want) > 1e-4:
+                if abs(m - want) > 1e-6:
                     bad.append(f"{ds}/{method}/{metric}: mean={m} but values "
                                f"average to {want:.6f}")
 

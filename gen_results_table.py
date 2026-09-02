@@ -124,6 +124,32 @@ def idc_corr_faithfulness(ds, seeds):
     return s + (f" (n={len(ok)}/{len(vals)})" if len(ok) < len(vals) else "")
 
 
+def best_epoch_gap(data):
+    """How far IDC's LOGGED best-epoch ARI sits above the final-label ARI.
+
+    The npz carries `ari` = model.best_ari, chosen while looking at the true
+    labels; the tables recompute ARI from the final labels because a tree has
+    no epoch to select. Reciting the margin by hand is how the other notes in
+    this file went stale, so it is read off the artifacts at generation time."""
+    from wpaths import idc_out
+    worst = None
+    for ds, r in data.items():
+        vals = [v for v in (r["idc"]["ARI"].get("values") or []) if v is not None]
+        best = []
+        for s in r.get("seeds", []):
+            p = idc_out(f"idc_out_{ds}_seed{s}.npz")
+            if os.path.exists(p):
+                d = np.load(p)
+                if "ari" in d and np.isfinite(float(d["ari"])):
+                    best.append(float(d["ari"]))
+        if vals and len(best) == len(vals):
+            gap = float(np.mean(best) - np.mean(vals))
+            if worst is None or gap > worst[1]:
+                worst = (NAMES[ds], gap)
+    return "" if worst is None else (f"The largest gap in this campaign is "
+                                     f"{worst[0]}, {worst[1]:+.3f} ARI.")
+
+
 def load_all():
     """Every results file that exists, in ORDER."""
     from wpaths import results
@@ -252,9 +278,19 @@ def main():
         "  because every gate row of that run already peaks at 1 and the",
         "  normalisation therefore changes nothing. Where the two differ, the",
         "  gap is the share of the raw number that was gate MAGNITUDE rather",
-        "  than granularity — on the SpEx side a factor of 1.7 to 2.9.",
+        "  than granularity — on the SpEx side a factor of 1.7 to 2.9, except",
+        "  on the single-feature trees (Two Moons, Breast Cancer, Iris), where",
+        "  row normalisation turns every row into the same indicator vector and",
+        "  the row-normalised value is exactly 0.",
         "- IDC config is paper-validated **only for MNIST**; all other IDC columns",
         "  use a default config and are lower bounds under un-tuned settings.",
+        "- IDC's ACC/ARI/NMI are recomputed here from the FINAL model's labels",
+        "  via Munkres. They are NOT the best-epoch values IDC logs during",
+        "  training and stores in the npz as `acc`/`ari`/`nmi`: those are picked",
+        "  while looking at the true labels, and a tree has no epochs to pick",
+        "  from, so using them would compare two protocols. The gap is",
+        "  systematic and one-directional (the npz value is never lower). "
+        + best_epoch_gap(data),
         "- `±` is the standard deviation over the retraining seeds — the spread",
         "  across runs, not a measurement uncertainty of a single run. `n/a`",
         "  cells name the reason a value does not exist; they are not zeros.",
