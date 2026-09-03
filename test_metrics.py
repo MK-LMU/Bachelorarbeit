@@ -13,7 +13,7 @@ metrics is asserted here rather than argued in prose:
   fast path           uniqueness_pre / stability_pre are bit-exact against
       IDC's originals, including on an integer tie grid.
   normalisation       `row_normalize` leaves all-zero rows at zero, and the
-      two nn_identical_frac implementations agree without ties.
+      two nn_agreement implementations agree without ties.
 """
 import os
 import sys
@@ -28,8 +28,8 @@ warnings.filterwarnings("ignore")
 from sklearn.metrics import jaccard_score
 from metrics import (faithfulness, diversity, uniqueness, stability,
                      faithfulness_k, diversity_fixed, row_normalize, precompute_nn,
-                     uniqueness_pre, stability_pre, nn_identical_frac,
-                     nn_identical_frac_pre, distance_matrix)
+                     uniqueness_pre, stability_pre, nn_agreement,
+                     nn_agreement_pre, distance_matrix)
 
 FAILS = []
 
@@ -180,7 +180,7 @@ for name, X in cases.items():
           f"{int(fin.sum())} finite samples")
 
 # ----------------------------------------------------- normalisation
-print("[normalisation] row_normalize and nn_identical_frac variants")
+print("[normalisation] row_normalize and nn_agreement variants")
 g = rng.random((50, 7)); g[3] = 0.0; g[10] *= 1e-3
 rn = row_normalize(g)
 check("row max == 1 for non-zero rows", np.allclose(rn[rn.max(1) > 0].max(1), 1.0))
@@ -188,8 +188,8 @@ check("all-zero row stays 0", np.all(rn[3] == 0.0))
 X = rng.random((200, 4))
 g = np.repeat(rng.random((8, 4)), 25, axis=0)
 _, nn_i = precompute_nn(X, kmax=2)
-check("nn_identical_frac (sklearn NN) == nn_identical_frac_pre (IDC argsort), no ties",
-      nn_identical_frac(X, g) == nn_identical_frac_pre(g, nn_i))
+check("nn_agreement (sklearn NN) == nn_agreement_pre (IDC argsort), no ties",
+      nn_agreement(X, g) == nn_agreement_pre(g, nn_i))
 
 print("=" * 60)
 print(f"RESULT: {'ALL PASS' if not FAILS else 'FAILED: ' + ', '.join(FAILS)}")

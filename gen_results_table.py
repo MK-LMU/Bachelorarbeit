@@ -38,16 +38,16 @@ GROUPS = [
      [("ref_ARI", "ARI(spectral ref, y)"), ("tree_vs_ref_ARI", "ARI(tree, ref)")]),
     ("Explanation granularity",
      "how individual are the explanations? **The four rows are not on one "
-     "scale and do not point the same way.** nn-identical is a share in [0,1] "
+     "scale and do not point the same way.** nn agreement is a share in [0,1] "
      "-- the fraction of samples whose nearest neighbour gets an IDENTICAL "
      "explanation row -- so HIGH means one template per region. uniqueness and "
      "stability divide a gate distance by an input distance, are unbounded "
-     "above, and HIGH means more per-sample variation. nn-identical is "
+     "above, and HIGH means more per-sample variation. nn agreement is "
      "scale-free (for gate magnitudes above ~1e-7, where the comparison is "
      "purely relative) and carries the granularity claim; the other two also "
      "react to gate magnitude, which is why the row-normalised variant is "
      "reported beside the raw one",
-     [("nn_identical_frac", "nn-identical frac"),
+     [("nn_identical_frac", "nn agreement"),
       ("uniqueness", "uniqueness (raw)"),
       ("uniqueness_rownorm", "uniqueness (row-norm)"),
       ("stability_k5", "stability (k=5)")]),
@@ -308,11 +308,11 @@ def main():
         "  by the UNSUPERVISED silhouette score (no label access; candidates'",
         "  ARI was logged but never used for selection — supervised tuning",
         "  would be leakage). Grid + winners: results/tuning/selection.json.",
-        "- **uniqueness vs nn-identical can rank the methods differently**",
+        "- **uniqueness vs nn agreement can rank the methods differently**",
         "  (e.g. Digits): uniqueness measures gate *magnitude* distances and",
-        "  shrinks when gates are weak (un-tuned IDC), nn-identical measures",
+        "  shrinks when gates are weak (un-tuned IDC), nn agreement measures",
         "  *identity* and is config/scale-robust — base granularity claims on",
-        "  nn-identical.",
+        "  nn agreement.",
         "- generalizability does not penalise non-selection: constant all-open",
         "  gates (tuned 2-D IDC) reduce it to plain-X separability. Cells whose",
         "  per-seed values EQUAL the ungated reference carry the marker",
@@ -335,7 +335,7 @@ def main():
         "and K, so counting statements refer to these 9 primary configurations.",
         "Every variant keeps its full detail block below.",
         "",
-        "| dataset | k-means ARI (baseline) | ARI SpEx | ARI IDC | nn-ident SpEx | nn-ident IDC | faith. top-1 drop SpEx | faith. top-1 drop IDC | IDC config |",
+        "| dataset | k-means ARI (baseline) | ARI SpEx | ARI IDC | nn-agr. SpEx | nn-agr. IDC | faith. top-1 drop SpEx | faith. top-1 drop IDC | IDC config |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
     PRIMARY = ["two_moons_best", "blobs_best", "iris_best", "breast_cancer_best",
@@ -371,7 +371,7 @@ def main():
                  "than a coarse one"),
                 ("constant_gate_seeds", "One explanation for every sample",
                  "the gate matrix has a single distinct row, so uniqueness and "
-                 "stability read 0 and nn-identical reads 1 -- that is maximal "
+                 "stability read 0 and nn agreement reads 1 -- that is maximal "
                  "coarseness, not stability. The clustering rows are unaffected "
                  "and can still look competitive"),
                 ("empty_median_seeds", "Every median gate set empty",
@@ -446,7 +446,7 @@ def main():
                     # A number here can describe NOTHING: with every gate zero
                     # there is no explanation to measure, and with one shared
                     # row every gate distance is 0 by construction. Writing
-                    # 0.000 (or a 1.000 nn-identical over an empty matrix)
+                    # 0.000 (or a 1.000 nn agreement over an empty matrix)
                     # reads like a stable result -- the same misreading the
                     # diversity defect produces. So the cell itself names why
                     # the value does not exist; the notice above the table

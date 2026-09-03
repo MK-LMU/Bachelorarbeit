@@ -36,7 +36,7 @@ from wpaths import idc_out, results, CAMPAIGN_SEEDS
 from metrics import (get_accuracy, diversity, generalizability, row_normalize,
                      faithfulness_k, faithfulness_drop, diversity_fixed,
                      precompute_nn, uniqueness_pre, stability_pre,
-                     nn_identical_frac_pre)
+                     nn_agreement_pre)
 from spex_pipeline import spex_side
 
 DATASETS = ["two_moons", "two_moons_tuned", "two_moons_best",
@@ -62,7 +62,8 @@ def dist_block(gates, nn_d, nn_i):
         "uniqueness": uniqueness_pre(gates, nn_d, nn_i, k=2),
         "uniqueness_rownorm": uniqueness_pre(row_normalize(gates), nn_d, nn_i, k=2),
         "stability_k5": stability_pre(gates, nn_d, nn_i, k=5),
-        "nn_identical_frac": nn_identical_frac_pre(gates, nn_i),
+        # storage key kept for existing result files (metric: nn agreement)
+        "nn_identical_frac": nn_agreement_pre(gates, nn_i),
     }
 
 
@@ -141,7 +142,7 @@ def evaluate_dataset(ds):
     # the results table can say what the reader is looking at.
     #
     #   zero      the gate matrix is identically 0: no explanation at all, yet
-    #             uniqueness 0, stability 0, nn_identical_frac 1.0, diversity
+    #             uniqueness 0, stability 0, nn_agreement 1.0, diversity
     #             100 -- "said nothing" reads as maximally stable and diverse.
     #   constant  the gate matrix has exactly ONE distinct row: every sample
     #             gets the same explanation. The distance metrics collapse to

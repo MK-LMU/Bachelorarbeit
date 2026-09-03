@@ -84,11 +84,11 @@ Notes:
   by the UNSUPERVISED silhouette score (no label access; candidates'
   ARI was logged but never used for selection — supervised tuning
   would be leakage). Grid + winners: results/tuning/selection.json.
-- **uniqueness vs nn-identical can rank the methods differently**
+- **uniqueness vs nn agreement can rank the methods differently**
   (e.g. Digits): uniqueness measures gate *magnitude* distances and
-  shrinks when gates are weak (un-tuned IDC), nn-identical measures
+  shrinks when gates are weak (un-tuned IDC), nn agreement measures
   *identity* and is config/scale-robust — base granularity claims on
-  nn-identical.
+  nn agreement.
 - generalizability does not penalise non-selection: constant all-open
   gates (tuned 2-D IDC) reduce it to plain-X separability. Cells whose
   per-seed values EQUAL the ungated reference carry the marker
@@ -103,7 +103,7 @@ groups are explained here once.
 |---|---|
 | **Clustering quality** | how well does the partition match the true classes (higher = better) |
 | **Decomposition: reference quality vs. tree approximation** | SpEx only — is a weak result the reference's fault or the tree's? ARI(tree, ref) near 1 means the tree copies its reference faithfully |
-| **Explanation granularity** | how individual are the explanations? **The four rows are not on one scale and do not point the same way.** nn-identical is a share in [0,1] -- the fraction of samples whose nearest neighbour gets an IDENTICAL explanation row -- so HIGH means one template per region. uniqueness and stability divide a gate distance by an input distance, are unbounded above, and HIGH means more per-sample variation. nn-identical is scale-free (for gate magnitudes above ~1e-7, where the comparison is purely relative) and carries the granularity claim; the other two also react to gate magnitude, which is why the row-normalised variant is reported beside the raw one |
+| **Explanation granularity** | how individual are the explanations? **The four rows are not on one scale and do not point the same way.** nn agreement is a share in [0,1] -- the fraction of samples whose nearest neighbour gets an IDENTICAL explanation row -- so HIGH means one template per region. uniqueness and stability divide a gate distance by an input distance, are unbounded above, and HIGH means more per-sample variation. nn agreement is scale-free (for gate magnitudes above ~1e-7, where the comparison is purely relative) and carries the granularity claim; the other two also react to gate magnitude, which is why the row-normalised variant is reported beside the raw one |
 | **Faithfulness** | do the features called important actually carry the assignment? (higher = better; masking sets features to 0) |
 | **Diversity across classes** | do different classes get different features? the original metric is defective (both defects are spelled out below) — use diversity_fixed |
 | **Generalizability** | **supervised separability of the TRUE class labels after gating** — a LinearSVC is trained on X x gates to predict y, so this is NOT a measure of whether the CLUSTERING generalises, and the explanation is never compared against the cluster assignment. A method that gates nothing keeps X intact and therefore scores highest; read every value against the ungated reference row, which is the ceiling both methods are measured against |
@@ -116,7 +116,7 @@ below are NOT 19 datasets: `_best`, `_tuned` and default share X, y
 and K, so counting statements refer to these 9 primary configurations.
 Every variant keeps its full detail block below.
 
-| dataset | k-means ARI (baseline) | ARI SpEx | ARI IDC | nn-ident SpEx | nn-ident IDC | faith. top-1 drop SpEx | faith. top-1 drop IDC | IDC config |
+| dataset | k-means ARI (baseline) | ARI SpEx | ARI IDC | nn-agr. SpEx | nn-agr. IDC | faith. top-1 drop SpEx | faith. top-1 drop IDC | IDC config |
 |---|---|---|---|---|---|---|---|---|
 | Two Moons | 0.479 | 0.405 ±0.000 | 0.535 ±0.168 | 0.998 ±0.000 | 1.000 ±0.000 | 0.319 ±0.000 | 0.347 ±0.084 | tuned (grid, silhouette-selected) |
 | Gaussian Blobs | 0.871 | 0.832 ±0.000 | 0.347 ±0.064 | 0.990 ±0.000 | 1.000 ±0.000 | 0.536 ±0.000 | 0.105 ±0.109 | tuned (grid, silhouette-selected) |
@@ -142,7 +142,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.636 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.998 ±0.000 | n/a (all gates zero -- no explanation to measure) |
+| nn agreement  [0,1] | 0.998 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | uniqueness (raw)  [0,inf) | 0.105 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | stability (k=5)  [0,inf) | 0.319 ±0.000 | n/a (all gates zero -- no explanation to measure) |
@@ -160,7 +160,7 @@ Every variant keeps its full detail block below.
 
 ## Two Moons — IDC tuned (LGL=0.1)  (N=2000, D=2, K=2, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (LGL=0.1), k-means baseline ARI 0.479)
 
-> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn-identical reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
+> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn agreement reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
 
 | metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
 |---|---|---|
@@ -172,7 +172,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.636 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.998 ±0.000 | 1.000 ±0.000 |
+| nn agreement  [0,1] | 0.998 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.105 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | stability (k=5)  [0,inf) | 0.319 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -190,7 +190,7 @@ Every variant keeps its full detail block below.
 
 ## Two Moons — IDC best (grid/silhouette)  (N=2000, D=2, K=2, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (grid, silhouette-selected), k-means baseline ARI 0.479)
 
-> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn-identical reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
+> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn agreement reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
 
 | metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
 |---|---|---|
@@ -202,7 +202,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.645 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.636 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.998 ±0.000 | 1.000 ±0.000 |
+| nn agreement  [0,1] | 0.998 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.105 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | stability (k=5)  [0,inf) | 0.319 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -232,7 +232,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.990 ±0.000 | n/a (all gates zero -- no explanation to measure) |
+| nn agreement  [0,1] | 0.990 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | uniqueness (row-norm)  [0,inf) | 0.657 ±0.000 | n/a (all gates zero -- no explanation to measure) |
 | stability (k=5)  [0,inf) | 1.094 ±0.000 | n/a (all gates zero -- no explanation to measure) |
@@ -250,7 +250,7 @@ Every variant keeps its full detail block below.
 
 ## Gaussian Blobs — IDC tuned (LGL=0.1)  (N=2000, D=2, K=5, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (LGL=0.1), k-means baseline ARI 0.871)
 
-> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn-identical reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
+> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn agreement reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
 
 | metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
 |---|---|---|
@@ -262,7 +262,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
+| nn agreement  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | uniqueness (row-norm)  [0,inf) | 0.657 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | stability (k=5)  [0,inf) | 1.094 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -280,7 +280,7 @@ Every variant keeps its full detail block below.
 
 ## Gaussian Blobs — IDC best (grid/silhouette)  (N=2000, D=2, K=5, seeds=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], IDC config: tuned (grid, silhouette-selected), k-means baseline ARI 0.871)
 
-> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn-identical reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
+> **One explanation for every sample** in IDC seeds [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]: the gate matrix has a single distinct row, so uniqueness and stability read 0 and nn agreement reads 1 -- that is maximal coarseness, not stability. The clustering rows are unaffected and can still look competitive.
 
 | metric | SpEx (Spectral+tree, +Tree SHAP) | IDC |
 |---|---|---|
@@ -292,7 +292,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.873 ±3.4e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.916 ±3.6e-04 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
+| nn agreement  [0,1] | 0.990 ±0.000 | 1.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.389 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | uniqueness (row-norm)  [0,inf) | 0.657 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
 | stability (k=5)  [0,inf) | 1.094 ±0.000 | n/a (one shared explanation row -- gate distance 0 by construction) |
@@ -320,7 +320,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.745 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.906 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.960 ±0.000 | 0.015 ±0.004 |
+| nn agreement  [0,1] | 0.960 ±0.000 | 0.015 ±0.004 |
 | uniqueness (raw)  [0,inf) | nan | nan |
 | uniqueness (row-norm)  [0,inf) | nan | nan |
 | stability (k=5)  [0,inf) | nan | nan |
@@ -353,7 +353,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.745 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.906 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.960 ±0.000 | 0.637 ±0.476 |
+| nn agreement  [0,1] | 0.960 ±0.000 | 0.637 ±0.476 |
 | uniqueness (raw)  [0,inf) | nan | nan |
 | uniqueness (row-norm)  [0,inf) | nan | nan |
 | stability (k=5)  [0,inf) | nan | nan |
@@ -383,7 +383,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.798 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.829 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.944 ±0.000 | 0.003 ±0.005 |
+| nn agreement  [0,1] | 0.944 ±0.000 | 0.003 ±0.005 |
 | uniqueness (raw)  [0,inf) | 0.060 ±0.000 | 0.031 ±0.008 |
 | uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | 0.013 ±0.025 |
 | stability (k=5)  [0,inf) | 0.138 ±0.000 | 0.052 ±0.014 |
@@ -411,7 +411,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.798 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.829 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.944 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.944 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.060 ±0.000 | 0.151 ±0.015 |
 | uniqueness (row-norm)  [0,inf) | 0.000 ±0.000 | 0.148 ±0.014 |
 | stability (k=5)  [0,inf) | 0.138 ±0.000 | 0.252 ±0.027 |
@@ -439,7 +439,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.815 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.463 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.820 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.820 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.098 ±0.000 | 0.074 ±0.011 |
 | uniqueness (row-norm)  [0,inf) | 0.212 ±0.000 | 0.128 ±0.019 |
 | stability (k=5)  [0,inf) | 0.216 ±0.000 | 0.114 ±0.018 |
@@ -467,7 +467,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.815 ±0.000 | — |
 | ARI(tree, ref)  [-.5,1] | 0.463 ±0.000 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.820 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.820 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.098 ±0.000 | 0.160 ±0.021 |
 | uniqueness (row-norm)  [0,inf) | 0.212 ±0.000 | 0.160 ±0.021 |
 | stability (k=5)  [0,inf) | 0.216 ±0.000 | 0.239 ±0.032 |
@@ -495,7 +495,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.2e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.992 ±0.003 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.999 ±0.000 | 0.073 ±0.024 |
+| nn agreement  [0,1] | 0.999 ±0.000 | 0.073 ±0.024 |
 | uniqueness (raw)  [0,inf) | 2.5e-04 ±0.000 | 0.400 ±0.042 |
 | uniqueness (row-norm)  [0,inf) | 4.2e-04 ±0.000 | 0.436 ±0.045 |
 | stability (k=5)  [0,inf) | 0.001 ±0.000 | 0.608 ±0.049 |
@@ -523,7 +523,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.507 ±2.2e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.992 ±0.003 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.999 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.999 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 2.5e-04 ±0.000 | 2.519 ±0.064 |
 | uniqueness (row-norm)  [0,inf) | 4.2e-04 ±0.000 | 2.519 ±0.064 (= raw) |
 | stability (k=5)  [0,inf) | 0.001 ±0.000 | 2.823 ±0.065 |
@@ -553,7 +553,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.3e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.282 ±9.5e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.593 ±0.000 | 0.003 ±0.001 |
+| nn agreement  [0,1] | 0.593 ±0.000 | 0.003 ±0.001 |
 | uniqueness (raw)  [0,inf) | 0.072 ±0.000 | 0.654 ±0.012 |
 | uniqueness (row-norm)  [0,inf) | 0.169 ±0.000 | 0.685 ±0.011 |
 | stability (k=5)  [0,inf) | 0.142 ±0.000 | 0.792 ±0.011 |
@@ -581,7 +581,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.415 ±1.3e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.282 ±9.5e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.593 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.593 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.072 ±0.000 | 2.430 ±0.011 |
 | uniqueness (row-norm)  [0,inf) | 0.169 ±0.000 | 2.430 ±0.011 (= raw) |
 | stability (k=5)  [0,inf) | 0.142 ±0.000 | 2.571 ±0.010 |
@@ -611,7 +611,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.570 ±1.7e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.382 ±4.8e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.753 ±0.000 | 8.0e-05 ±9.2e-05 |
+| nn agreement  [0,1] | 0.753 ±0.000 | 8.0e-05 ±9.2e-05 |
 | uniqueness (raw)  [0,inf) | 0.024 ±0.000 | 0.792 ±0.003 |
 | uniqueness (row-norm)  [0,inf) | 0.068 ±0.000 | 0.792 ±0.003 (= raw) |
 | stability (k=5)  [0,inf) | 0.050 ±0.000 | 0.863 ±0.003 |
@@ -641,7 +641,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.715 ±2.6e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.353 ±3.7e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.669 ±0.000 | 2.1e-04 ±2.5e-04 |
+| nn agreement  [0,1] | 0.669 ±0.000 | 2.1e-04 ±2.5e-04 |
 | uniqueness (raw)  [0,inf) | 0.092 ±0.000 | 0.702 ±0.012 |
 | uniqueness (row-norm)  [0,inf) | 0.196 ±0.000 | 0.720 ±0.010 |
 | stability (k=5)  [0,inf) | 0.169 ±0.000 | 0.865 ±0.010 |
@@ -669,7 +669,7 @@ Every variant keeps its full detail block below.
 | ARI(spectral ref, y)  [-.5,1] | 0.715 ±2.6e-04 | — |
 | ARI(tree, ref)  [-.5,1] | 0.353 ±3.7e-05 | — |
 | **Explanation granularity** | | |
-| nn-identical frac  [0,1] | 0.669 ±0.000 | 0.000 ±0.000 |
+| nn agreement  [0,1] | 0.669 ±0.000 | 0.000 ±0.000 |
 | uniqueness (raw)  [0,inf) | 0.092 ±0.000 | 2.897 ±0.050 |
 | uniqueness (row-norm)  [0,inf) | 0.196 ±0.000 | 2.897 ±0.050 (= raw) |
 | stability (k=5)  [0,inf) | 0.169 ±0.000 | 3.089 ±0.052 |

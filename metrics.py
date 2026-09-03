@@ -82,12 +82,12 @@ def row_normalize(gates):
     in the gates, so comparing raw SpEx |SHAP| against IDC gates mixes scale into
     the granularity signal. Both variants are therefore reported side by side in
     RESULTS_MULTISEED.md, and the granularity claim itself rests on the
-    scale-invariant nn_identical_frac rather than on either of them."""
+    scale-invariant nn_agreement rather than on either of them."""
     gmax = gates.max(axis=1, keepdims=True)
     return np.divide(gates, gmax, out=np.zeros_like(gates), where=gmax > 0)
 
 
-def nn_identical_frac(X, gates):
+def nn_agreement(X, gates):
     """Scale-invariant granularity: fraction of samples whose 1-NN (in X,
     excluding self) has an IDENTICAL gate row. This is the number that separates
     piecewise-constant (SpEx: NN usually shares a leaf) from per-sample (IDC)
@@ -214,7 +214,7 @@ def all_metrics(name, X, gates, inference_fn, y_true, K, seed=0,
     #    IS uniqueness(k=2); stability is therefore reported at k=5 instead.
     #  - both are homogeneous of degree 1 in the gates -> NOT scale-invariant;
     #    raw |SHAP| rows are ~5x smaller than IDC's [0,1] gates, so the
-    #    row-normalised value and the scale-invariant nn_identical_frac are
+    #    row-normalised value and the scale-invariant nn_agreement are
     #    reported alongside the raw value.
     if skip_distance_metrics:
         for k_ in ("uniqueness", "uniqueness_rownorm", "stability",
@@ -225,7 +225,9 @@ def all_metrics(name, X, gates, inference_fn, y_true, K, seed=0,
         out["uniqueness_rownorm"] = float(uniqueness(X, row_normalize(gates), k=2, subset_size=N))
         out["stability"] = out["uniqueness"]     # identical by construction at k=2
         out["stability_k5"] = float(stability(X, gates, k=5, subset_size=N))
-        out["nn_identical_frac"] = nn_identical_frac(X, gates)
+        # JSON key "nn_identical_frac" kept for compatibility with existing result
+        # files; the metric itself is the nearest-neighbour explanation agreement.
+        out["nn_identical_frac"] = nn_agreement(X, gates)
 
     # generalizability: LinearSVC on gated features, train/test split
     rng = np.random.default_rng(seed)
@@ -298,14 +300,14 @@ def _other_neighbour(ind):
     tied samples both distances are 0, so the sort can put the twin in column 0
     and the sample itself in column 1. Taking column 1 blindly then compares
     gates[i] with gates[i] and scores a guaranteed hit -- +1/150 on every Iris
-    value, for both methods. Eq. (nnid) says "the nearest neighbour of x_n", and
+    value, for both methods. Eq. (nnagree) says "the nearest neighbour of x_n", and
     that is what this returns. Some j != i always sits in the first two columns,
     because i occupies at most one of them."""
     idx = np.arange(ind.shape[0])
     return np.where(ind[:, 0] != idx, ind[:, 0], ind[:, 1])
 
 
-def nn_identical_frac_pre(gates, nn_ind_mat):
+def nn_agreement_pre(gates, nn_ind_mat):
     """Scale-invariant granularity (share of samples whose nearest OTHER sample
     has an identical gate row), using the same tie-breaking as the metrics
     above."""

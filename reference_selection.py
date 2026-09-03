@@ -32,7 +32,7 @@ from wpaths import idc_out, RESULTS_TUNING, CAMPAIGN_SEEDS, N_SEEDS
 from metrics import (get_accuracy, diversity, generalizability, row_normalize,
                      faithfulness_drop, diversity_fixed,
                      precompute_nn, uniqueness_pre, stability_pre,
-                     nn_identical_frac_pre)
+                     nn_agreement_pre)
 from spex_pipeline import spex_side
 
 DATASETS = ["two_moons", "blobs", "iris", "breast_cancer", "digits",
@@ -94,7 +94,7 @@ def main():
                    "uniqueness": uniqueness_pre(gates, nn_d, nn_i, k=2),
                    "uniqueness_rownorm": uniqueness_pre(row_normalize(gates), nn_d, nn_i, k=2),
                    "stability_k5": stability_pre(gates, nn_d, nn_i, k=5),
-                   "nn_identical_frac": nn_identical_frac_pre(gates, nn_i),
+                   "nn_identical_frac": nn_agreement_pre(gates, nn_i),
                    "diversity_fixed": diversity_fixed(y, gates, K)}
             fd = faithfulness_drop(gates, X, infer, y, X.shape[1], K)
             row["faithfulness_top1drop"] = fd["faithfulness_top1drop"]
