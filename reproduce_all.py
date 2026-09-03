@@ -230,14 +230,14 @@ run("check_ranges.py")                        # every reported value against the
 # comparisons below must run in THIS order: the integrity check first (and be
 # copied away), the canonical 5-vs-10 comparison last.
 run("seed_robustness.py",                     # (a) integrity check against the interim
-    "notes/baseline_10seeds_0bis9")           # seeds-0-9 campaign: on the shared seeds
+    "results/baselines/10seeds_0bis9")        # seeds-0-9 campaign: on the shared seeds
                                               # 1-9 every value must be identical, i.e.
                                               # the move to seeds 1-10 changed nothing
                                               # (SEED_VERGLEICH_5_VS_10.md, section 2)
 copy("results/seed_robustness.json",
      "results/seed_robustness_integrity_seedshift.json")
 run("seed_robustness.py")                     # (b) CANONICAL: 5-seed vs 10-seed campaign
-                                              # (default baseline notes/baseline_5seeds):
+                                              # (default baseline results/baselines/5seeds):
                                               # which conclusions did the seed count
                                               # move? This is the file that
                                               # SEED_VERGLEICH_5_VS_10.md reports

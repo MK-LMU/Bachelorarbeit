@@ -17,11 +17,10 @@ comparison has two halves, and the first matters more:
 For the head-to-head tests it additionally reports which verdicts changed and
 how much the confidence intervals narrowed -- the actual point of n = 10.
 
-The baseline defaults to notes/baseline_5seeds/ (kept out of the repository).
-Any directory of results_multiseed_*.json works, so the 5-seed state can also
-be recovered from git history:
-
-    git checkout <commit-before-10-seeds> -- results/
+The baseline defaults to results/baselines/5seeds/, the frozen 5-seed campaign
+(seeds 0-4). results/baselines/10seeds_0bis9/ is the interim seeds-0-9 campaign
+that reproduce_all.py checks first. Any directory of results_multiseed_*.json
+works.
 
 Usage: seed_robustness.py [baseline_dir]
 Output: results/seed_robustness.json + console report
@@ -32,7 +31,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from wpaths import results, RESULTS
 
-DEFAULT_BASELINE = os.path.join(HERE, "notes", "baseline_5seeds")
+DEFAULT_BASELINE = os.path.join(RESULTS, "baselines", "5seeds")
 
 # metrics worth tracking; the rest are bookkeeping fields
 METRICS = ["ACC", "ARI", "NMI", "uniqueness", "uniqueness_rownorm",

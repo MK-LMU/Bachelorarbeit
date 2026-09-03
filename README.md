@@ -42,6 +42,8 @@ is the configuration-search seed and is not reported), all metrics,
 19 dataset variants. It is generated from `results/*.json` by `gen_results_table.py`;
 don't edit it by hand. `results/` also holds the standalone checks: significance tests,
 the metric equivalence proof, the tuning protocols and the RQ2 stability study.
+`results/baselines/` keeps the two earlier campaign states (5 seeds 0–4, 10 seeds 0–9)
+that `seed_robustness.py` compares the current results against.
 
 IDC's configuration here is **not** IDC's own default. Optimiser, learning rates,
 scheduler and batch size are the values of the authors' released `cfg_run.yaml`, but the
@@ -117,7 +119,9 @@ zehn Seeds (1–10; Seed 0 ist der Konfigurations-Suchseed und wird nicht berich
 alle Metriken, 19 Datensatz-Varianten. Sie wird von `gen_results_table.py`
 aus `results/*.json` erzeugt und nicht von Hand bearbeitet. In `results/` liegen außerdem
 die freistehenden Prüfungen: Signifikanztests, der Metrik-Äquivalenzbeweis, die
-Tuning-Protokolle und die RQ2-Stabilitätsstudie.
+Tuning-Protokolle und die RQ2-Stabilitätsstudie. `results/baselines/` hält die beiden
+früheren Kampagnenstände (5 Seeds 0–4, 10 Seeds 0–9), gegen die `seed_robustness.py`
+die aktuellen Ergebnisse vergleicht.
 
 IDCs Konfiguration hier ist **nicht** IDCs eigener Default. Optimierer, Lernraten,
 Scheduler und Batchgröße sind die Werte aus `cfg_run.yaml` der Autoren, das Netz ist
