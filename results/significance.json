@@ -1,11 +1,17 @@
 {
   "alpha": 0.05,
-  "method_head_to_head": "two-sided t-test of IDC's per-seed ARI against SpEx's; one-sample against the constant where SpEx is seed-constant (field `test`), Welch otherwise; Holm-Bonferroni over the 9 comparisons. idc_ari_ci95 is the interval of IDC's MEAN ARI, not of the difference to SpEx",
+  "metrics": [
+    "ARI",
+    "NMI",
+    "ACC"
+  ],
+  "method_head_to_head": "two-sided t-test of IDC's per-seed value against SpEx's; one-sample against the constant where SpEx is seed-constant (field `test`), Welch otherwise; Holm-Bonferroni over the 9 comparisons of each metric separately (blocks head_to_head = ARI, head_to_head_nmi, head_to_head_acc). p_wilcoxon: one-sample Wilcoxon signed-rank of the same seeds against the SpEx value, Holm within the same family. idc_<metric>_ci95 is the interval of IDC's MEAN, not of the difference to SpEx",
   "method_architecture": "Welch two-sample t-test, default vs small/tiny (per-test n in n_default/n_arch); Holm-Bonferroni over the 4 tests",
   "head_to_head": [
     {
       "dataset": "Blobs",
       "file": "results_multiseed_blobs_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.832007,
       "spex_ari_std": 0.0,
@@ -20,12 +26,16 @@
       ],
       "t": -24.037,
       "p": 1.784662983890186e-09,
+      "p_wilcoxon": 0.001953125,
       "p_holm": 1.4277303871121487e-08,
-      "verdict": "SpEx better"
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
     },
     {
       "dataset": "Digits",
       "file": "results_multiseed_digits_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.417597,
       "spex_ari_std": 0.0,
@@ -40,12 +50,16 @@
       ],
       "t": -38.575,
       "p": 2.626938890360621e-11,
+      "p_wilcoxon": 0.001953125,
       "p_holm": 2.364245001324559e-10,
-      "verdict": "SpEx better"
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
     },
     {
       "dataset": "CIFAR-10",
       "file": "results_multiseed_cifar10_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.174126,
       "spex_ari_std": 0.0,
@@ -60,12 +74,16 @@
       ],
       "t": 15.939,
       "p": 6.650874902244916e-08,
+      "p_wilcoxon": 0.001953125,
       "p_holm": 3.990524941346949e-07,
-      "verdict": "IDC better"
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
     },
     {
       "dataset": "MNIST (ResNet feats)",
       "file": "results_multiseed_mnist_feats_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.253131,
       "spex_ari_std": 0.0,
@@ -80,12 +98,16 @@
       ],
       "t": 13.211,
       "p": 3.381071193217553e-07,
+      "p_wilcoxon": 0.001953125,
       "p_holm": 1.6905355966087765e-06,
-      "verdict": "IDC better"
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
     },
     {
       "dataset": "MNIST (validated)",
       "file": "results_multiseed_mnist.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.244731,
       "spex_ari_std": 0.0,
@@ -100,12 +122,16 @@
       ],
       "t": 22.017,
       "p": 3.88403781863245e-09,
+      "p_wilcoxon": 0.001953125,
       "p_holm": 2.718826473042715e-08,
-      "verdict": "IDC better"
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
     },
     {
       "dataset": "Iris",
       "file": "results_multiseed_iris_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.732298,
       "spex_ari_std": 0.0,
@@ -120,12 +146,16 @@
       ],
       "t": -5.096,
       "p": 0.0006489779932590206,
+      "p_wilcoxon": 0.00390625,
       "p_holm": 0.0025959119730360825,
-      "verdict": "SpEx better"
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
     },
     {
       "dataset": "Breast Cancer",
       "file": "results_multiseed_breast_cancer_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.693918,
       "spex_ari_std": 0.0,
@@ -140,12 +170,16 @@
       ],
       "t": -2.177,
       "p": 0.0574940754756232,
+      "p_wilcoxon": 0.01953125,
       "p_holm": 0.1149881509512464,
-      "verdict": "not resolved"
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.05859375,
+      "verdict_wilcoxon": "not resolved"
     },
     {
       "dataset": "Two Moons",
       "file": "results_multiseed_two_moons_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.405499,
       "spex_ari_std": 0.0,
@@ -160,12 +194,16 @@
       ],
       "t": 2.445,
       "p": 0.037065996752907386,
+      "p_wilcoxon": 0.037109375,
       "p_holm": 0.11119799025872215,
-      "verdict": "not resolved"
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.07421875,
+      "verdict_wilcoxon": "not resolved"
     },
     {
       "dataset": "HAR",
       "file": "results_multiseed_har_best.json",
+      "metric": "ARI",
       "test": "one-sample",
       "spex_ari": 0.507795,
       "spex_ari_std": 0.0,
@@ -180,8 +218,447 @@
       ],
       "t": 0.678,
       "p": 0.5145708504389119,
+      "p_wilcoxon": 0.556640625,
       "p_holm": 0.5145708504389119,
-      "verdict": "not resolved"
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.556640625,
+      "verdict_wilcoxon": "not resolved"
+    }
+  ],
+  "head_to_head_nmi": [
+    {
+      "dataset": "Blobs",
+      "file": "results_multiseed_blobs_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.821831,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.50216,
+      "idc_nmi_std": 0.056803,
+      "n": 10,
+      "delta": -0.319671,
+      "idc_nmi_ci95": [
+        0.461525,
+        0.542794
+      ],
+      "t": -17.796,
+      "p": 2.5356926886991425e-08,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 1.7749848820893996e-07,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "Digits",
+      "file": "results_multiseed_digits_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.564647,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.295645,
+      "idc_nmi_std": 0.048717,
+      "n": 10,
+      "delta": -0.269002,
+      "idc_nmi_ci95": [
+        0.260795,
+        0.330495
+      ],
+      "t": -17.461,
+      "p": 2.9955465285227425e-08,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 1.7973279171136455e-07,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "CIFAR-10",
+      "file": "results_multiseed_cifar10_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.33905,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.483706,
+      "idc_nmi_std": 0.028878,
+      "n": 10,
+      "delta": 0.144656,
+      "idc_nmi_ci95": [
+        0.463047,
+        0.504364
+      ],
+      "t": 15.84,
+      "p": 7.020680496468551e-08,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 3.5103402482342754e-07,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "MNIST (ResNet feats)",
+      "file": "results_multiseed_mnist_feats_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.407123,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.740922,
+      "idc_nmi_std": 0.050031,
+      "n": 10,
+      "delta": 0.333799,
+      "idc_nmi_ci95": [
+        0.705132,
+        0.776711
+      ],
+      "t": 21.098,
+      "p": 5.6632285390696735e-09,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 4.530582831255739e-08,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "MNIST (validated)",
+      "file": "results_multiseed_mnist.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.344933,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.765567,
+      "idc_nmi_std": 0.042262,
+      "n": 10,
+      "delta": 0.420634,
+      "idc_nmi_ci95": [
+        0.735335,
+        0.7958
+      ],
+      "t": 31.474,
+      "p": 1.6187808903024303e-10,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 1.4569028012721873e-09,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "Iris",
+      "file": "results_multiseed_iris_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.790679,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.253189,
+      "idc_nmi_std": 0.346388,
+      "n": 10,
+      "delta": -0.53749,
+      "idc_nmi_ci95": [
+        0.005398,
+        0.50098
+      ],
+      "t": -4.907,
+      "p": 0.0008396083534998078,
+      "p_wilcoxon": 0.00390625,
+      "p_holm": 0.0033584334139992312,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "Breast Cancer",
+      "file": "results_multiseed_breast_cancer_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.588396,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.522249,
+      "idc_nmi_std": 0.106765,
+      "n": 10,
+      "delta": -0.066147,
+      "idc_nmi_ci95": [
+        0.445874,
+        0.598624
+      ],
+      "t": -1.959,
+      "p": 0.08174837073432539,
+      "p_wilcoxon": 0.01953125,
+      "p_holm": 0.23417644946018248,
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.05859375,
+      "verdict_wilcoxon": "not resolved"
+    },
+    {
+      "dataset": "Two Moons",
+      "file": "results_multiseed_two_moons_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.389652,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.454468,
+      "idc_nmi_std": 0.16679,
+      "n": 10,
+      "delta": 0.064816,
+      "idc_nmi_ci95": [
+        0.335154,
+        0.573783
+      ],
+      "t": 1.229,
+      "p": 0.25027159313977687,
+      "p_wilcoxon": 0.232421875,
+      "p_holm": 0.25027159313977687,
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.232421875,
+      "verdict_wilcoxon": "not resolved"
+    },
+    {
+      "dataset": "HAR",
+      "file": "results_multiseed_har_best.json",
+      "metric": "NMI",
+      "test": "one-sample",
+      "spex_nmi": 0.723208,
+      "spex_nmi_std": 0.0,
+      "n_spex": 10,
+      "idc_nmi_mean": 0.654668,
+      "idc_nmi_std": 0.109031,
+      "n": 10,
+      "delta": -0.06854,
+      "idc_nmi_ci95": [
+        0.576671,
+        0.732664
+      ],
+      "t": -1.988,
+      "p": 0.0780588164867275,
+      "p_wilcoxon": 0.10546875,
+      "p_holm": 0.23417644946018248,
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.2109375,
+      "verdict_wilcoxon": "not resolved"
+    }
+  ],
+  "head_to_head_acc": [
+    {
+      "dataset": "Blobs",
+      "file": "results_multiseed_blobs_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.927,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.42735,
+      "idc_acc_std": 0.086488,
+      "n": 10,
+      "delta": -0.49965,
+      "idc_acc_ci95": [
+        0.36548,
+        0.48922
+      ],
+      "t": -18.269,
+      "p": 2.0146944487131504e-08,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 1.6117555589705203e-07,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "Digits",
+      "file": "results_multiseed_digits_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.619922,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.216472,
+      "idc_acc_std": 0.018889,
+      "n": 10,
+      "delta": -0.40345,
+      "idc_acc_ci95": [
+        0.202959,
+        0.229984
+      ],
+      "t": -67.542,
+      "p": 1.7267626790008852e-13,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 1.5540864111007968e-12,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "CIFAR-10",
+      "file": "results_multiseed_cifar10_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.406,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.50936,
+      "idc_acc_std": 0.044419,
+      "n": 10,
+      "delta": 0.10336,
+      "idc_acc_ci95": [
+        0.477585,
+        0.541135
+      ],
+      "t": 7.358,
+      "p": 4.288509714946443e-05,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 0.00021442548574732216,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "MNIST (ResNet feats)",
+      "file": "results_multiseed_mnist_feats_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.471,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.71224,
+      "idc_acc_std": 0.097512,
+      "n": 10,
+      "delta": 0.24124,
+      "idc_acc_ci95": [
+        0.642484,
+        0.781996
+      ],
+      "t": 7.823,
+      "p": 2.6447209406239174e-05,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 0.00015868325643743505,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "MNIST (validated)",
+      "file": "results_multiseed_mnist.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.4569,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.80671,
+      "idc_acc_std": 0.072519,
+      "n": 10,
+      "delta": 0.34981,
+      "idc_acc_ci95": [
+        0.754833,
+        0.858587
+      ],
+      "t": 15.254,
+      "p": 9.749799635813464e-08,
+      "p_wilcoxon": 0.001953125,
+      "p_holm": 6.824859745069424e-07,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "IDC better"
+    },
+    {
+      "dataset": "Iris",
+      "file": "results_multiseed_iris_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.893333,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.496,
+      "idc_acc_std": 0.227063,
+      "n": 10,
+      "delta": -0.397333,
+      "idc_acc_ci95": [
+        0.333569,
+        0.658431
+      ],
+      "t": -5.534,
+      "p": 0.00036403466297751653,
+      "p_wilcoxon": 0.00390625,
+      "p_holm": 0.0014561386519100661,
+      "verdict": "SpEx better",
+      "p_wilcoxon_holm": 0.017578125,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "Breast Cancer",
+      "file": "results_multiseed_breast_cancer_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.917399,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.88928,
+      "idc_acc_std": 0.042592,
+      "n": 10,
+      "delta": -0.028119,
+      "idc_acc_ci95": [
+        0.858811,
+        0.919748
+      ],
+      "t": -2.088,
+      "p": 0.06642566893707502,
+      "p_wilcoxon": 0.017578125,
+      "p_holm": 0.09015194072270455,
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.041015625,
+      "verdict_wilcoxon": "SpEx better"
+    },
+    {
+      "dataset": "Two Moons",
+      "file": "results_multiseed_two_moons_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.8185,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.8616,
+      "idc_acc_std": 0.058608,
+      "n": 10,
+      "delta": 0.0431,
+      "idc_acc_ci95": [
+        0.819674,
+        0.903526
+      ],
+      "t": 2.326,
+      "p": 0.045075970361352274,
+      "p_wilcoxon": 0.064453125,
+      "p_holm": 0.09015194072270455,
+      "verdict": "not resolved",
+      "p_wilcoxon_holm": 0.064453125,
+      "verdict_wilcoxon": "not resolved"
+    },
+    {
+      "dataset": "HAR",
+      "file": "results_multiseed_har_best.json",
+      "metric": "ACC",
+      "test": "one-sample",
+      "spex_acc": 0.540732,
+      "spex_acc_std": 0.0,
+      "n_spex": 10,
+      "idc_acc_mean": 0.65183,
+      "idc_acc_std": 0.107308,
+      "n": 10,
+      "delta": 0.111098,
+      "idc_acc_ci95": [
+        0.575067,
+        0.728594
+      ],
+      "t": 3.274,
+      "p": 0.00962152123251844,
+      "p_wilcoxon": 0.013671875,
+      "p_holm": 0.02886456369755532,
+      "verdict": "IDC better",
+      "p_wilcoxon_holm": 0.041015625,
+      "verdict_wilcoxon": "IDC better"
     }
   ],
   "architecture_check": [
@@ -243,105 +720,243 @@
     }
   ],
   "family_sensitivity_joint": {
-    "n_tests": 13,
-    "method": "Holm-Bonferroni over the head-to-head and architecture tests pooled into ONE family, as a sensitivity check on the two-family split used for the reported verdicts",
+    "n_tests": 31,
+    "method": "Holm-Bonferroni over the head-to-head tests of all three quality metrics and the architecture tests pooled into ONE family, as a sensitivity check on the per-family split used for the reported verdicts",
     "tests": [
       {
         "family": "head_to_head",
-        "label": "Blobs",
+        "label": "Blobs (ARI)",
         "p": 1.784662983890186e-09,
         "p_holm_split": 1.4277303871121487e-08,
-        "p_holm_joint": 2.141595580668223e-08
+        "p_holm_joint": 4.997056354892521e-08
       },
       {
         "family": "head_to_head",
-        "label": "Digits",
+        "label": "Digits (ARI)",
         "p": 2.626938890360621e-11,
         "p_holm_split": 2.364245001324559e-10,
-        "p_holm_joint": 3.415020557468807e-10
+        "p_holm_joint": 7.880816671081863e-10
       },
       {
         "family": "head_to_head",
-        "label": "CIFAR-10",
+        "label": "CIFAR-10 (ARI)",
         "p": 6.650874902244916e-08,
         "p_holm_split": 3.990524941346949e-07,
-        "p_holm_joint": 6.650874902244916e-07
+        "p_holm_joint": 1.4631924784938815e-06
       },
       {
         "family": "head_to_head",
-        "label": "MNIST (ResNet feats)",
+        "label": "MNIST (ResNet feats) (ARI)",
         "p": 3.381071193217553e-07,
         "p_holm_split": 1.6905355966087765e-06,
-        "p_holm_joint": 3.0429640738957974e-06
+        "p_holm_joint": 6.424035267113351e-06
       },
       {
         "family": "head_to_head",
-        "label": "MNIST (validated)",
+        "label": "MNIST (validated) (ARI)",
         "p": 3.88403781863245e-09,
         "p_holm_split": 2.718826473042715e-08,
-        "p_holm_joint": 4.272441600495695e-08
+        "p_holm_joint": 1.0486902110307615e-07
       },
       {
         "family": "head_to_head",
-        "label": "Iris",
+        "label": "Iris (ARI)",
         "p": 0.0006489779932590206,
         "p_holm_split": 0.0025959119730360825,
-        "p_holm_joint": 0.005191823946072165
+        "p_holm_joint": 0.00973466989888531
       },
       {
         "family": "head_to_head",
-        "label": "Breast Cancer",
+        "label": "Breast Cancer (ARI)",
         "p": 0.0574940754756232,
         "p_holm_split": 0.1149881509512464,
-        "p_holm_joint": 0.287470377378116
+        "p_holm_joint": 0.5174466792806088
       },
       {
         "family": "head_to_head",
-        "label": "Two Moons",
+        "label": "Two Moons (ARI)",
         "p": 0.037065996752907386,
         "p_holm_split": 0.11119799025872215,
-        "p_holm_joint": 0.2223959805174443
+        "p_holm_joint": 0.40772596428198127
       },
       {
         "family": "head_to_head",
-        "label": "HAR",
+        "label": "HAR (ARI)",
         "p": 0.5145708504389119,
         "p_holm_split": 0.5145708504389119,
-        "p_holm_joint": 0.5825703729856099
+        "p_holm_joint": 0.7767604973141465
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "Blobs (NMI)",
+        "p": 2.5356926886991425e-08,
+        "p_holm_split": 1.7749848820893996e-07,
+        "p_holm_joint": 6.085662452877942e-07
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "Digits (NMI)",
+        "p": 2.9955465285227425e-08,
+        "p_holm_split": 1.7973279171136455e-07,
+        "p_holm_joint": 6.889757015602308e-07
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "CIFAR-10 (NMI)",
+        "p": 7.020680496468551e-08,
+        "p_holm_split": 3.5103402482342754e-07,
+        "p_holm_joint": 1.4743429042583957e-06
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "MNIST (ResNet feats) (NMI)",
+        "p": 5.6632285390696735e-09,
+        "p_holm_split": 4.530582831255739e-08,
+        "p_holm_joint": 1.472439420158115e-07
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "MNIST (validated) (NMI)",
+        "p": 1.6187808903024303e-10,
+        "p_holm_split": 1.4569028012721873e-09,
+        "p_holm_joint": 4.694464581877048e-09
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "Iris (NMI)",
+        "p": 0.0008396083534998078,
+        "p_holm_split": 0.0033584334139992312,
+        "p_holm_joint": 0.011754516948997309
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "Breast Cancer (NMI)",
+        "p": 0.08174837073432539,
+        "p_holm_split": 0.23417644946018248,
+        "p_holm_joint": 0.5314053514966002
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "Two Moons (NMI)",
+        "p": 0.25027159313977687,
+        "p_holm_split": 0.25027159313977687,
+        "p_holm_joint": 0.7767604973141465
+      },
+      {
+        "family": "head_to_head_nmi",
+        "label": "HAR (NMI)",
+        "p": 0.0780588164867275,
+        "p_holm_split": 0.23417644946018248,
+        "p_holm_joint": 0.5314053514966002
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "Blobs (ACC)",
+        "p": 2.0146944487131504e-08,
+        "p_holm_split": 1.6117555589705203e-07,
+        "p_holm_joint": 5.036736121782876e-07
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "Digits (ACC)",
+        "p": 1.7267626790008852e-13,
+        "p_holm_split": 1.5540864111007968e-12,
+        "p_holm_joint": 5.352964304902745e-12
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "CIFAR-10 (ACC)",
+        "p": 4.288509714946443e-05,
+        "p_holm_split": 0.00021442548574732216,
+        "p_holm_joint": 0.0007290466515408954
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "MNIST (ResNet feats) (ACC)",
+        "p": 2.6447209406239174e-05,
+        "p_holm_split": 0.00015868325643743505,
+        "p_holm_joint": 0.00047604976931230514
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "MNIST (validated) (ACC)",
+        "p": 9.749799635813464e-08,
+        "p_holm_split": 6.824859745069424e-07,
+        "p_holm_joint": 1.949959927162693e-06
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "Iris (ACC)",
+        "p": 0.00036403466297751653,
+        "p_holm_split": 0.0014561386519100661,
+        "p_holm_joint": 0.0058245546076402645
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "Breast Cancer (ACC)",
+        "p": 0.06642566893707502,
+        "p_holm_split": 0.09015194072270455,
+        "p_holm_joint": 0.5314053514966002
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "Two Moons (ACC)",
+        "p": 0.045075970361352274,
+        "p_holm_split": 0.09015194072270455,
+        "p_holm_joint": 0.45075970361352274
+      },
+      {
+        "family": "head_to_head_acc",
+        "label": "HAR (ACC)",
+        "p": 0.00962152123251844,
+        "p_holm_split": 0.02886456369755532,
+        "p_holm_joint": 0.11545825479022127
       },
       {
         "family": "architecture_check",
         "label": "blobs small",
         "p": 0.19419012432853663,
         "p_holm_split": 0.38838024865707327,
-        "p_holm_joint": 0.5825703729856099
+        "p_holm_joint": 0.7767604973141465
       },
       {
         "family": "architecture_check",
         "label": "blobs tiny",
         "p": 0.06857786613253444,
         "p_holm_split": 0.20573359839760333,
-        "p_holm_joint": 0.287470377378116
+        "p_holm_joint": 0.5314053514966002
       },
       {
         "family": "architecture_check",
         "label": "digits small",
         "p": 0.22887325414837087,
         "p_holm_split": 0.38838024865707327,
-        "p_holm_joint": 0.5825703729856099
+        "p_holm_joint": 0.7767604973141465
       },
       {
         "family": "architecture_check",
         "label": "digits tiny",
         "p": 0.008246283509699597,
         "p_holm_split": 0.03298513403879839,
-        "p_holm_joint": 0.05772398456789718
+        "p_holm_joint": 0.10720168562609476
       }
     ],
     "verdicts_changed": [
+      "HAR (ACC)",
       "digits tiny"
     ]
   },
   "n_resolved_raw": 7,
-  "n_resolved_holm": 6
+  "n_resolved_holm": 6,
+  "n_resolved_holm_by_metric": {
+    "ARI": 6,
+    "NMI": 6,
+    "ACC": 7
+  },
+  "verdicts_differ_from_ari": {
+    "NMI": [],
+    "ACC": [
+      "HAR"
+    ]
+  }
 }
