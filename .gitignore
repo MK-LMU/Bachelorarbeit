@@ -19,12 +19,9 @@ IDC/data/pbmc_x.npz
 results/results_*.json
 !results/results_multiseed_*.json
 
-# Results of the four check scripts held back pending the supervisor
-# discussion. The scripts write here via wpaths.results(), so moving the files
-# would work against their own output path; they are withheld in place.
-results/arch_check.json
+# Result of the two check scripts that the thesis does not cite
+# (check_gener_scale.py, check_uniq_scale.py live outside the repository).
 results/gener_scale_check.json
-results/faithfulness_masking_check.json
 
 # The thesis' own documentation: findings log, review, figure reading guide,
 # drafts, outline, paper PDFs. Only code and generated results are published

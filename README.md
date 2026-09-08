@@ -69,11 +69,11 @@ actually reports; the KernelExplainer and round-trip angles are not repeated the
   `cifar_feats.npz` and `mnist_feats.npz` come from ResNet18 on the GPU and are **not
   bit-identically re-extractable** on other hardware or a different torch version. Their
   SHA-256 sums are in `DATA_CHECKSUMS.sha256`.
-- Four check scripts (`check_architecture`, `check_gener_scale`, `check_uniq_scale`,
-  `check_faithfulness_masking`) and their result JSONs, held back pending a discussion
-  with the supervisor. Their calls in `reproduce_all.py` are commented out, and
-  `significance.py` degrades cleanly without them: its architecture section becomes
-  `null`, the head-to-head tests are unaffected.
+- Two check scripts (`check_gener_scale`, `check_uniq_scale`) and their result JSON,
+  whose findings the thesis does not cite. Their calls in `reproduce_all.py` are
+  commented out. The two check scripts the thesis does report, `check_architecture`
+  (capacity study) and `check_faithfulness_masking` (masking study), are included with
+  their result JSONs.
 
 ### Environment and licence
 
@@ -148,11 +148,11 @@ dort nicht wiederholt).
   `cifar_feats.npz` und `mnist_feats.npz` entstehen per ResNet18 auf der GPU und sind auf
   anderer Hardware oder Torch-Version **nicht bitgleich re-extrahierbar**. Ihre
   SHA-256-Summen stehen in `DATA_CHECKSUMS.sha256`.
-- Vier Prüfskripte (`check_architecture`, `check_gener_scale`, `check_uniq_scale`,
-  `check_faithfulness_masking`) samt ihrer Ergebnis-JSONs, zurückgehalten bis zur
-  Absprache mit dem Betreuer. Ihre Aufrufe in `reproduce_all.py` sind auskommentiert, und
-  `significance.py` kommt ohne sie zurecht: der Architektur-Abschnitt wird `null`, die
-  Head-to-head-Tests bleiben unberührt.
+- Zwei Prüfskripte (`check_gener_scale`, `check_uniq_scale`) samt Ergebnis-JSON, deren
+  Befunde die Arbeit nicht zitiert. Ihre Aufrufe in `reproduce_all.py` sind auskommentiert.
+  Die zwei Prüfskripte, deren Ergebnisse die Arbeit berichtet, `check_architecture`
+  (Kapazitätsstudie) und `check_faithfulness_masking` (Maskierungsstudie), sind mit ihren
+  Ergebnis-JSONs enthalten.
 
 ### Umgebung und Lizenz
 

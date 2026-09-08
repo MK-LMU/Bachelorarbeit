@@ -158,11 +158,10 @@ for ds in ["iris", "breast_cancer", "digits", "har"]:
     run("run_idc.py", "--data", ds, "--seed", "0", "--lgl", str(w["lgl"]),
         "--epochs", str(w["epochs"]), "--tag", "_best")
 
-# HELD BACK (see the note at the end of this file):
-# run("check_architecture.py")                # is network size the limit on
-#                                             # Blobs/Digits? small/tiny, 3 seeds,
-#                                             # same LGL/epochs as the _best runs
-#                                             # (result: refuted)
+run("check_architecture.py")                  # is network size the limit on
+                                              # Blobs/Digits? small/tiny, 3 seeds,
+                                              # same LGL/epochs as the _best runs
+                                              # (result: refuted)
 #                                             # -> results/arch_check.json
 
 # --------------------------------------------------------------------------
@@ -201,11 +200,10 @@ run("compare_kprime.py")                      # k' > k on MNIST (10/50/200 leave
                                               # more leaves improve the clustering but
                                               # do not close the granularity gap
                                               # (over-segmentation)
-# HELD BACK:
-# run("check_faithfulness_masking.py")        # faithfulness with mean instead of zero
-#                                             # masking, both methods; IDC from the
-#                                             # persisted .pt (no training)
-#                                             # -> results/faithfulness_masking_check.json
+run("check_faithfulness_masking.py")          # faithfulness with mean instead of zero
+                                              # masking, both methods; IDC from the
+                                              # persisted .pt (no training)
+                                              # -> results/faithfulness_masking_check.json
 
 # --------------------------------------------------------------------------
 # 10. Evaluation and deliverables
@@ -249,16 +247,16 @@ run("seed_robustness.py")                     # (b) CANONICAL: 5-seed vs 10-seed
 # --------------------------------------------------------------------------
 # HELD-BACK CHECK SCRIPTS
 #
-# Four scripts are commented out above; pending a discussion with the
-# supervisor they live in notes/ausgelagert/ and are not part of this
-# repository:
-#   check_architecture.py          network size as the limit? -> refuted
+# Two scripts are commented out above. The thesis does not cite their
+# findings, so they are not part of this repository:
 #   check_gener_scale.py           generalizability raw vs. row-normalised
 #   check_uniq_scale.py            scale share of the uniqueness gap
-#   check_faithfulness_masking.py  mean instead of zero masking
 #
-# Their result files (arch_check.json, gener_scale_check.json,
-# faithfulness_masking_check.json) are therefore not shipped either.
+# Their result file (gener_scale_check.json) is therefore not shipped either.
+# check_architecture.py and check_faithfulness_masking.py, whose results the
+# thesis reports (capacity study, masking study), run above like every other
+# step and ship with their JSONs (arch_check.json,
+# faithfulness_masking_check.json).
 # significance.py copes with that: without arch_check.json its architecture
 # section is null and the head-to-head t-tests are unaffected.
 # --------------------------------------------------------------------------
