@@ -2,8 +2,8 @@
 """Every program invocation of this thesis, in dependency order.
 
 This file is first of all a LIST: it documents every run behind the numbers in
-RESULTS_MULTISEED.md, the result JSONs in results/ and the figures in
-notes/figures/.
+RESULTS_MULTISEED.md, the result JSONs in results/ and the figures of the
+thesis in figures/.
 
     python reproduce_all.py --dry     # print the commands, compute nothing
     python reproduce_all.py           # run everything (~20 h, GPU + CPU)
@@ -11,8 +11,9 @@ notes/figures/.
 Prerequisites (once, created by no script):
   python -m venv venv
   venv\\Scripts\\pip install -r requirements.txt
-  build artifacts/data/har_data.npz from the UCI HAR dataset
-      (keys X = (10299, 561), y = labels 0..5; train and test merged)
+  python build_har.py   -> artifacts/data/har_data.npz (UCI HAR via OpenML,
+      keys X = (10299, 561), y = labels 0..5; byte-identical to the campaign
+      file, checked against DATA_CHECKSUMS.sha256)
   checksums of the three data artefacts (har_data, cifar_feats, mnist_feats):
       DATA_CHECKSUMS.sha256 — the ResNet features depend on GPU and torch
       version and are not bit-identically re-extractable; use the original
@@ -243,6 +244,20 @@ run("seed_robustness.py")                     # (b) CANONICAL: 5-seed vs 10-seed
                                               # resolved, Blobs CI wider). Until
                                               # 2026-08-31 the shipped JSON was the
                                               # output of (a), overwritten in place.
+
+# --------------------------------------------------------------------------
+# 11. Figures of the thesis  (figures/, named as in the LaTeX sources)
+# --------------------------------------------------------------------------
+run("figures/compute_faithfulness_curves.py") # deletion curves of both methods,
+                                              # both fills, seeds 1-10, from the
+                                              # checkpoints (no training)
+                                              # -> results/faithfulness_curves.json
+run("figures/make_faithfulness_figures.py")   # Figure 5.1 and the fill dependence
+run("figures/make_violins.py")                # Figures 5.2 and A.3
+run("figures/make_pipeline_figure.py")        # schematic of Chapter 4 (no data)
+run("figures/collect_explanation_figures.py") # Figures 4.2, A.1, A.2: the three
+                                              # per-sample figures written by
+                                              # visualize_explanations.py above
 
 # --------------------------------------------------------------------------
 # HELD-BACK CHECK SCRIPTS
