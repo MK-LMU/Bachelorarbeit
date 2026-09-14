@@ -252,7 +252,7 @@ run("figures/compute_faithfulness_curves.py") # deletion curves of both methods,
                                               # both fills, seeds 1-10, from the
                                               # checkpoints (no training)
                                               # -> results/faithfulness_curves.json
-run("figures/make_faithfulness_figures.py")   # Figure 5.1 and the fill dependence
+run("figures/make_faithfulness_figures.py")   # Figure 5.1
 run("figures/make_violins.py")                # Figures 5.2 and A.3
 run("figures/make_pipeline_figure.py")        # schematic of Chapter 4 (no data)
 run("figures/collect_explanation_figures.py") # Figures 4.2, A.1, A.2: the three

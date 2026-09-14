@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Figures 5.1 and A.2-style companion of the thesis: the deletion curves and
-the fill dependence of the drop-based Faithfulness readings.
+"""Figure 5.1 of the thesis: the deletion curves under zero masking, one panel
+per representation.
 
 Reads only results/faithfulness_curves.json (written by
 figures/compute_faithfulness_curves.py; the per-seed scalars in it equal those
-of results_multiseed_*.json). Writes, next to this script:
-
-    fig_faithfulness_curves.png   deletion curves under zero masking, one panel
-                                  per representation (Figure 5.1)
-    fig_faithfulness_fill.png     top-1 drop and AOPC under zero versus
-                                  column-mean fill, paired per representation
+of results_multiseed_*.json). Writes fig_faithfulness_curves.png next to this
+script. The fill dependence of the two readings is shown by figures/make_violins.py.
 
 Usage (repo root):  python figures/make_faithfulness_figures.py
 """
@@ -65,11 +61,6 @@ def curves(entry, side, fill):
     return out
 
 
-def scalar(entry, side, fill, key):
-    return np.array([c[fill][key] for c in CURVES[entry][side].values()
-                     if c[fill]["n_used"] > 0 and c[fill][key] is not None], float)
-
-
 # --------------------------------------------------------------------------
 # deletion curves, small multiples, log x (features masked)
 # --------------------------------------------------------------------------
@@ -123,45 +114,6 @@ def fig_curves(fill="zero", name="fig_faithfulness_curves.png"):
     plt.close(fig)
 
 
-# --------------------------------------------------------------------------
-# fill dependence, paired dumbbells (zero -> mean) for top-1 drop and AOPC
-# --------------------------------------------------------------------------
-def fig_fill_dumbbell(name="fig_faithfulness_fill.png"):
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.8), sharey=True)
-    ys = np.arange(len(ORDER))[::-1]
-    for ax, key, ttl in zip(axes, ["top1drop", "aopc"], ["top-1 drop", "AOPC"]):
-        ax.axvline(0, color=MUTED, lw=0.6)
-        for y, entry in zip(ys, ORDER):
-            for side, col, dy in [("spex", BLUE, +0.18), ("idc", ORANGE, -0.18)]:
-                z = scalar(entry, side, "zero", key)
-                m = scalar(entry, side, "mean", key)
-                if len(z) == 0:
-                    continue
-                if side == "idc":
-                    ax.plot(z, np.full_like(z, y + dy + 0.06), "|", color=col, ms=4, mew=0.6, alpha=0.5)
-                    ax.plot(m, np.full_like(m, y + dy - 0.06), "|", color=col, ms=4, mew=0.6, alpha=0.5)
-                zc, mc = np.median(z), np.median(m)
-                ax.plot([zc, mc], [y + dy, y + dy], "-", color=col, lw=1.2, zorder=2)
-                ax.plot([zc], [y + dy], "o", color=col, ms=5, zorder=3)
-                ax.plot([mc], [y + dy], "o", color=BG, mec=col, mew=1.2, ms=5, zorder=3)
-        ax.set_title(ttl, loc="left", fontweight="bold")
-        ax.set_xlim(-0.08, 0.72)
-        ax.set_xlabel("accuracy drop (baseline minus masked)")
-        ax.grid(True, axis="x")
-        ax.tick_params(length=2)
-    axes[0].set_yticks(ys)
-    axes[0].set_yticklabels([SHORT[k] for k in ORDER])
-    handles = [Line2D([], [], color=BLUE, lw=1.2, label="SpEx"),
-               Line2D([], [], color=ORANGE, lw=1.2, label="IDC (median of seeds; ticks = seeds)"),
-               Line2D([], [], color=INK, marker="o", ls="none", ms=5, label="zero fill (published)"),
-               Line2D([], [], color=BG, mec=INK, mew=1.2, marker="o", ls="none", ms=5, label="column-mean fill")]
-    fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.005))
-    fig.tight_layout(rect=(0, 0.06, 1, 1))
-    fig.savefig(os.path.join(OUT, name), dpi=200)
-    plt.close(fig)
-
-
 if __name__ == "__main__":
     fig_curves("zero")
-    fig_fill_dumbbell()
     print("written to", OUT)

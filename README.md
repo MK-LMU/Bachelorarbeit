@@ -64,13 +64,13 @@ actually reports; the KernelExplainer and round-trip angles are not repeated the
 
 ### Figures
 
-`figures/` holds the scripts behind the eight figures of the thesis and their output,
+`figures/` holds the scripts behind the seven figures of the thesis and their output,
 named as in the LaTeX sources. `make_pipeline_figure.py` needs no data.
 `make_faithfulness_figures.py` and `make_violins.py` read
 `results/faithfulness_curves.json`, which `compute_faithfulness_curves.py` recomputes from
 the persisted checkpoints. `collect_explanation_figures.py` picks up the three per-sample
 figures that `visualize_explanations.py` writes. Regenerated with the pinned versions, all
-eight PNGs are byte-identical to the shipped ones.
+seven PNGs are byte-identical to the shipped ones.
 
 ### What is not in here
 
@@ -154,13 +154,13 @@ dort nicht wiederholt).
 
 ### Abbildungen
 
-`figures/` enthält die Skripte hinter den acht Abbildungen der Arbeit und deren Ausgabe,
+`figures/` enthält die Skripte hinter den sieben Abbildungen der Arbeit und deren Ausgabe,
 benannt wie in den LaTeX-Quellen. `make_pipeline_figure.py` braucht keine Daten.
 `make_faithfulness_figures.py` und `make_violins.py` lesen
 `results/faithfulness_curves.json`, das `compute_faithfulness_curves.py` aus den
 gespeicherten Checkpoints neu berechnet. `collect_explanation_figures.py` übernimmt die
 drei Einzelbeispiel-Abbildungen, die `visualize_explanations.py` schreibt. Mit den
-gepinnten Versionen neu erzeugt, sind alle acht PNGs byteweise identisch mit den
+gepinnten Versionen neu erzeugt, sind alle sieben PNGs byteweise identisch mit den
 mitgelieferten.
 
 ### Was hier nicht liegt
