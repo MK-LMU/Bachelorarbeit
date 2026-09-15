@@ -258,6 +258,9 @@ run("figures/make_pipeline_figure.py")        # schematic of Chapter 4 (no data)
 run("figures/collect_explanation_figures.py") # Figures 4.2, A.1, A.2: the three
                                               # per-sample figures written by
                                               # visualize_explanations.py above
+run("figures/features_used.py")               # Table A.7 (split features, open
+                                              # gates) from faithfulness_curves.json
+                                              # -> results/features_used.json
 
 # --------------------------------------------------------------------------
 # HELD-BACK CHECK SCRIPTS

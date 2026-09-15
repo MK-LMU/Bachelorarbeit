@@ -1,0 +1,218 @@
+{
+ "two_moons_best": {
+  "name": "Two Moons",
+  "D": 2,
+  "spex_split_features": [
+   1
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "mean": 2.0,
+   "min": 2,
+   "max": 2
+  }
+ },
+ "blobs_best": {
+  "name": "Gaussian Blobs",
+  "D": 2,
+  "spex_split_features": [
+   2
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "mean": 2.0,
+   "min": 2,
+   "max": 2
+  }
+ },
+ "iris_best": {
+  "name": "Iris",
+  "D": 4,
+  "spex_split_features": [
+   1
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1
+   ],
+   "mean": 0.4,
+   "min": 0,
+   "max": 1
+  }
+ },
+ "breast_cancer_best": {
+  "name": "Breast Cancer",
+  "D": 30,
+  "spex_split_features": [
+   1
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    20,
+    22,
+    22,
+    28,
+    17,
+    19,
+    19,
+    22,
+    16,
+    23
+   ],
+   "mean": 20.8,
+   "min": 16,
+   "max": 28
+  }
+ },
+ "digits_best": {
+  "name": "Digits",
+  "D": 64,
+  "spex_split_features": [
+   9
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    64,
+    58,
+    58,
+    63,
+    58,
+    59,
+    64,
+    58,
+    61,
+    63
+   ],
+   "mean": 60.6,
+   "min": 58,
+   "max": 64
+  }
+ },
+ "har_best": {
+  "name": "HAR",
+  "D": 561,
+  "spex_split_features": [
+   5
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    561,
+    561,
+    561,
+    561,
+    561,
+    561,
+    561,
+    561,
+    561,
+    561
+   ],
+   "mean": 561.0,
+   "min": 561,
+   "max": 561
+  }
+ },
+ "cifar10_best": {
+  "name": "CIFAR-10 (feat.)",
+  "D": 512,
+  "spex_split_features": [
+   9
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512
+   ],
+   "mean": 512.0,
+   "min": 512,
+   "max": 512
+  }
+ },
+ "mnist_feats_best": {
+  "name": "MNIST (feat.)",
+  "D": 512,
+  "spex_split_features": [
+   9
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512,
+    512
+   ],
+   "mean": 512.0,
+   "min": 512,
+   "max": 512
+  }
+ },
+ "mnist": {
+  "name": "MNIST (pixels)",
+  "D": 784,
+  "spex_split_features": [
+   9
+  ],
+  "idc_open_gates": {
+   "per_seed": [
+    645,
+    639,
+    647,
+    639,
+    644,
+    640,
+    636,
+    649,
+    644,
+    638
+   ],
+   "mean": 642.1,
+   "min": 636,
+   "max": 649
+  }
+ }
+}

@@ -70,7 +70,9 @@ named as in the LaTeX sources. `make_pipeline_figure.py` needs no data.
 `results/faithfulness_curves.json`, which `compute_faithfulness_curves.py` recomputes from
 the persisted checkpoints. `collect_explanation_figures.py` picks up the three per-sample
 figures that `visualize_explanations.py` writes. Regenerated with the pinned versions, all
-seven PNGs are byte-identical to the shipped ones.
+seven PNGs are byte-identical to the shipped ones. `features_used.py` derives Table A.7,
+the split features of the tree and the open gates of IDC, from the same curves file and
+writes `results/features_used.json`.
 
 ### What is not in here
 
@@ -161,7 +163,9 @@ benannt wie in den LaTeX-Quellen. `make_pipeline_figure.py` braucht keine Daten.
 gespeicherten Checkpoints neu berechnet. `collect_explanation_figures.py` übernimmt die
 drei Einzelbeispiel-Abbildungen, die `visualize_explanations.py` schreibt. Mit den
 gepinnten Versionen neu erzeugt, sind alle sieben PNGs byteweise identisch mit den
-mitgelieferten.
+mitgelieferten. `features_used.py` leitet Tabelle A.7, die Split-Merkmale des Baums und
+die offenen Gates von IDC, aus derselben Kurvendatei ab und schreibt
+`results/features_used.json`.
 
 ### Was hier nicht liegt
 
